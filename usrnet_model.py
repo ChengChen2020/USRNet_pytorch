@@ -1,8 +1,24 @@
 import numpy as np
+from collections import OrderedDict
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+
+def sequential(*args):
+    if len(args) == 1:
+        if isinstance(args[0], OrderedDict):
+            raise NotImplementedError('sequential does not support OrderedDict input.')
+        return args[0]  # No sequential is needed.
+    modules = []
+    for module in args:
+        if isinstance(module, nn.Sequential):
+            for submodule in module.children():
+                modules.append(submodule)
+        elif isinstance(module, nn.Module):
+            modules.append(module)
+    return nn.Sequential(*modules)
 
 
 # -------------------------------------------------------
@@ -43,7 +59,7 @@ def conv(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, bi
             L.append(nn.AvgPool2d(kernel_size=kernel_size, stride=stride, padding=0))
         else:
             raise NotImplementedError('Undefined type: '.format(t))
-    return nn.Sequential(*L)
+    return sequential(*L)
 
 
 # -------------------------------------------------------
@@ -97,18 +113,18 @@ class ResUNet(nn.Module):
         # downsample
         downsample_block = downsample_strideconv
 
-        self.m_down1 = nn.Sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[0], nc[1], bias=False, mode='2'))
-        self.m_down2 = nn.Sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[1], nc[2], bias=False, mode='2'))
-        self.m_down3 = nn.Sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[2], nc[3], bias=False, mode='2'))
+        self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[0], nc[1], bias=False, mode='2'))
+        self.m_down2 = sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[1], nc[2], bias=False, mode='2'))
+        self.m_down3 = sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[2], nc[3], bias=False, mode='2'))
 
-        self.m_body = nn.Sequential(*[ResBlock(nc[3], nc[3], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_body = sequential(*[ResBlock(nc[3], nc[3], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
 
         # upsample
         upsample_block = upsample_convtranspose
 
-        self.m_up3 = nn.Sequential(upsample_block(nc[3], nc[2], bias=False, mode='2'), *[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
-        self.m_up2 = nn.Sequential(upsample_block(nc[2], nc[1], bias=False, mode='2'), *[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
-        self.m_up1 = nn.Sequential(upsample_block(nc[1], nc[0], bias=False, mode='2'), *[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_up3 = sequential(upsample_block(nc[3], nc[2], bias=False, mode='2'), *[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_up2 = sequential(upsample_block(nc[2], nc[1], bias=False, mode='2'), *[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_up1 = sequential(upsample_block(nc[1], nc[0], bias=False, mode='2'), *[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
 
         self.m_tail = conv(nc[0], out_nc, 3, bias=False, mode='C')
 
@@ -215,11 +231,11 @@ class HyperNet(nn.Module):
 
 
 class USRNet(nn.Module):
-    def __init__(self, n_iter=6, in_nc=4, out_nc=3, h_nc=32, nc=(16, 32, 64, 64)):
+    def __init__(self, n_iter=8, in_nc=4, out_nc=3, h_nc=64, nc=(64, 128, 256, 512)):
         super(USRNet, self).__init__()
-        self.P = ResUNet(in_nc=in_nc, out_nc=out_nc, nc=nc)
+        self.p = ResUNet(in_nc=in_nc, out_nc=out_nc, nc=nc)
         self.D = DataNet()
-        self.H = HyperNet(in_nc=2, out_nc=n_iter*2, h_nc=h_nc)
+        self.h = HyperNet(in_nc=2, out_nc=n_iter*2, h_nc=h_nc)
         self.n = n_iter
 
     def forward(self, x, k, sf, sigma):
@@ -234,11 +250,11 @@ class USRNet(nn.Module):
 
         x = F.interpolate(x, scale_factor=sf, mode='nearest')
 
-        ab = self.H(torch.cat((sigma, torch.tensor(sf).type_as(sigma).expand_as(sigma)), dim=1))
+        ab = self.h(torch.cat((sigma, torch.tensor(sf).type_as(sigma).expand_as(sigma)), dim=1))
 
         for i in range(self.n):
             x = self.D(x, Fk, FkC, F2k, FkFy, ab[:, i:i+1, ...], sf)
-            x = self.P(torch.cat((x, ab[:, i+self.n:i+self.n+1, ...].repeat(1, 1, x.size(2), x.size(3))), dim=1))
+            x = self.p(torch.cat((x, ab[:, i+self.n:i+self.n+1, ...].repeat(1, 1, x.size(2), x.size(3))), dim=1))
 
         return x
 

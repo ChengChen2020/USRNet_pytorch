@@ -3,6 +3,8 @@
 testsets/
 trainsets/
 train_log/
+model_zoo/
+results/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

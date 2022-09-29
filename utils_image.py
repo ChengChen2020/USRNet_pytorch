@@ -2,6 +2,7 @@ import os
 import cv2
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 
 import torch
 
@@ -20,6 +21,18 @@ def mkdirs(paths):
     else:
         for path in paths:
             mkdir(path)
+
+
+def surf(z, cmap='rainbow', figsize=None):
+    plt.figure(figsize=figsize)
+    ax3 = plt.axes(projection='3d')
+
+    w, h = z.shape[:2]
+    xx = np.arange(0, w, 1)
+    yy = np.arange(0, h, 1)
+    X, Y = np.meshgrid(xx, yy)
+    ax3.plot_surface(X, Y, z, cmap=cmap)
+    plt.show()
 
 
 def is_image_file(filename):
@@ -49,6 +62,11 @@ def _get_paths_from_images(path):
     return images
 
 
+def single2uint(img):
+
+    return np.uint8((img.clip(0, 1)*255.).round())
+
+
 def uint2single(img):
     return np.float32(img / 255.)
 
@@ -63,6 +81,11 @@ def uint2tensor3(img):
 # convert single (HxWxC) to 3-dimensional torch tensor
 def single2tensor3(img):
     return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).float()
+
+
+# convert single (HxWxn_channels) to 4-dimensional torch tensor
+def single2tensor4(img):
+    return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).float().unsqueeze(0)
 
 
 # convert 2/3/4-dimensional torch tensor to uint

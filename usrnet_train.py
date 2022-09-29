@@ -32,6 +32,13 @@ def main(json_path='config.json'):
     # device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
     device = torch.device('cpu')
 
+    # if 'tiny' in model_name:
+    #     model = net(n_iter=6, h_nc=32, in_nc=4, out_nc=3, nc=[16, 32, 64, 64],
+    #                 nb=2, act_mode="R", downsample_mode='strideconv', upsample_mode="convtranspose")
+    # else:
+    #     model = net(n_iter=8, h_nc=64, in_nc=4, out_nc=3, nc=[64, 128, 256, 512],
+    #                 nb=2, act_mode="R", downsample_mode='strideconv', upsample_mode="convtranspose")
+
     model = USRNet()
     optimizer = Adam(model.parameters(), lr=1e-4,
                      betas=opt['train']['optimizer_betas'],
