@@ -169,7 +169,8 @@ def main(json_path='config.json'):
             print(message)
 
         if current_step % opt_train['checkpoint_save'] == 0:
-            model.save(current_step)
+            # model.save(current_step)
+            pass
 
         if current_step % opt_train['checkpoint_test'] == 1:
 
@@ -217,7 +218,7 @@ def main(json_path='config.json'):
 
             print(avg_psnr)
 
-    model.save('latest')
+    # model.save('latest')
 
 
 if __name__ == '__main__':
