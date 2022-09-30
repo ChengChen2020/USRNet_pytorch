@@ -52,9 +52,9 @@
     "scheduler_milestones": [100000, 200000, 300000, 400000],
     "scheduler_gamma": 0.5,
 
-    "checkpoint_test": 5000,
+    "checkpoint_test": 1000,
     "checkpoint_save": 5000,
-    "checkpoint_print": 200
+    "checkpoint_print": 100
   },
 
   "test": {

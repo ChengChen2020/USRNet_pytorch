@@ -138,7 +138,7 @@ def main(json_path='config.json'):
     border = opt['scale']
 
     log_dict = OrderedDict()
-    for epoch in range(1):  # keep running
+    for epoch in range(100):  # keep running
 
         for i, train_data in enumerate(train_loader):
             model.train()
@@ -160,62 +160,62 @@ def main(json_path='config.json'):
             optimizer.step()
             scheduler.step()
 
-        if current_step % opt_train['checkpoint_print'] == 0:
-            message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
-                                                                      scheduler.get_lr())
-            for k, v in log_dict.items():  # merge log information into message
-                message += '{:s}: {:.3e} '.format(k, v)
-            print(message)
+            if current_step % opt_train['checkpoint_print'] == 0:
+                message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
+                                                                          scheduler.get_last_lr())
+                for k, v in log_dict.items():  # merge log information into message
+                    message += '{:s}: {:.3e} '.format(k, v)
+                print(message)
 
-        if current_step % opt_train['checkpoint_save'] == 0:
-            # model.save(current_step)
-            pass
+            if current_step % opt_train['checkpoint_save'] == 0:
+                # model.save(current_step)
+                pass
 
-        if current_step % opt_train['checkpoint_test'] == 1:
+            if current_step % opt_train['checkpoint_test'] == 0:
 
-            model.eval()
+                model.eval()
 
-            avg_psnr = 0.0
-            idx = 0
+                avg_psnr = 0.0
+                idx = 0
 
-            for test_data in test_loader:
-                idx += 1
-                image_name_ext = os.path.basename(test_data['L_path'][0])
-                img_name, ext = os.path.splitext(image_name_ext)
+                for test_data in test_loader:
+                    idx += 1
+                    image_name_ext = os.path.basename(test_data['L_path'][0])
+                    img_name, ext = os.path.splitext(image_name_ext)
 
-                img_dir = os.path.join(opt['log_path']['images'], img_name)
-                util.mkdir(img_dir)
+                    img_dir = os.path.join(opt['log_path']['images'], img_name)
+                    util.mkdir(img_dir)
 
-                L = test_data['L'].to(device)  # low-quality image
-                H = test_data['H'].to(device)
-                k = test_data['k'].to(device)  # blur kernel
-                sf = np.int(test_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
-                sigma = test_data['sigma'].to(device)  # noise level
+                    L = test_data['L'].to(device)  # low-quality image
+                    H = test_data['H'].to(device)
+                    k = test_data['k'].to(device)  # blur kernel
+                    sf = np.int(test_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
+                    sigma = test_data['sigma'].to(device)  # noise level
 
-                with torch.no_grad():
-                    E = model(L, k, sf, sigma)
+                    with torch.no_grad():
+                        E = model(L, k, sf, sigma)
 
-                E_img = util.tensor2uint(E.detach()[0].float().cpu())
-                H_img = util.tensor2uint(H.detach()[0].float().cpu())
+                    E_img = util.tensor2uint(E.detach()[0].float().cpu())
+                    H_img = util.tensor2uint(H.detach()[0].float().cpu())
 
-                # -----------------------
-                # save estimated image E
-                # -----------------------
-                save_img_path = os.path.join(img_dir, '{:s}_{:d}.png'.format(img_name, current_step))
-                util.imsave(E_img, save_img_path)
+                    # -----------------------
+                    # save estimated image E
+                    # -----------------------
+                    save_img_path = os.path.join(img_dir, '{:s}_{:d}.png'.format(img_name, current_step))
+                    util.imsave(E_img, save_img_path)
 
-                # -----------------------
-                # calculate PSNR
-                # -----------------------
-                current_psnr = util.calculate_psnr(E_img, H_img, border=border)
+                    # -----------------------
+                    # calculate PSNR
+                    # -----------------------
+                    current_psnr = util.calculate_psnr(E_img, H_img, border=border)
 
-                # logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
+                    # logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
 
-                avg_psnr += current_psnr
+                    avg_psnr += current_psnr
 
-            avg_psnr = avg_psnr / idx
+                avg_psnr = avg_psnr / idx
 
-            print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
+                print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
 
     # model.save('latest')
 
