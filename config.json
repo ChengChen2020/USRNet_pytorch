@@ -14,7 +14,6 @@
       "use_rot": true,
       "scales": [1, 2, 3, 4],
       "dataloader_shuffle": true,
-      "dataloader_num_workers": 2,
       "dataloader_batch_size": 48
     },
     "test": {

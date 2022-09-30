@@ -81,7 +81,7 @@ def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1
 def main(json_path='config.json'):
 
     opt = utils_parameter.parse(json_path, is_train=True)
-    util.mkdirs((path for key, path in opt['path'].items() if 'pretrained' not in key))
+    util.mkdirs((path for key, path in opt['log_path'].items() if 'pretrained' not in key))
 
     # device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
     device = torch.device('cpu')
@@ -119,7 +119,7 @@ def main(json_path='config.json'):
             train_loader = DataLoader(train_set,
                                       batch_size=dataset_opt['dataloader_batch_size'],
                                       shuffle=dataset_opt['dataloader_shuffle'],
-                                      num_workers=2,
+                                      num_workers=1,
                                       drop_last=True,
                                       pin_memory=True)
         elif phase == 'test':
@@ -132,6 +132,7 @@ def main(json_path='config.json'):
             assert False
 
     assert train_loader is not None and test_loader is not None
+    print("Data Loader successful!")
 
     current_step = 0
     border = opt['scale']
@@ -159,9 +160,8 @@ def main(json_path='config.json'):
             log_dict['loss'] = loss.item()
 
             optimizer.step()
-            scheduler.step()
 
-        if current_step % opt['train']['checkpoint_print'] == 0:
+        if current_step % opt_train['checkpoint_print'] == 0:
             message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
                                                                       scheduler.get_lr())
             for k, v in log_dict.items():  # merge log information into message
@@ -217,6 +217,8 @@ def main(json_path='config.json'):
             avg_psnr = avg_psnr / idx
 
             print(avg_psnr)
+
+        scheduler.step()
 
     # model.save('latest')
 
