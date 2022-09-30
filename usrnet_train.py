@@ -83,8 +83,8 @@ def main(json_path='config.json'):
     opt = utils_parameter.parse(json_path, is_train=True)
     util.mkdirs((path for key, path in opt['log_path'].items() if 'pretrained' not in key))
 
-    # device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
-    device = torch.device('cpu')
+    device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
+    # device = torch.device('cpu')
 
     # if 'tiny' in model_name:
     #     model = net(n_iter=6, h_nc=32, in_nc=4, out_nc=3, nc=[16, 32, 64, 64],
@@ -140,10 +140,8 @@ def main(json_path='config.json'):
     log_dict = OrderedDict()
     for epoch in range(1):  # keep running
 
-        model.train()
-
         for i, train_data in enumerate(train_loader):
-
+            model.train()
             current_step += 1
 
             L = train_data['L'].to(device)  # low-quality image
@@ -160,6 +158,7 @@ def main(json_path='config.json'):
             log_dict['loss'] = loss.item()
 
             optimizer.step()
+            scheduler.step()
 
         if current_step % opt_train['checkpoint_print'] == 0:
             message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
@@ -216,9 +215,7 @@ def main(json_path='config.json'):
 
             avg_psnr = avg_psnr / idx
 
-            print(avg_psnr)
-
-        scheduler.step()
+            print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
 
     # model.save('latest')
 
