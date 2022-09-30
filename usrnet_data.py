@@ -128,21 +128,29 @@ class DatasetUSRNet(data.Dataset):
 
 
 if __name__ == "__main__":
-    opt = utils_parameter.parse('train_usrnet.json', is_train=True)
+    opt = utils_parameter.parse('config.json', is_train=True)
+
+    train_loader = test_loader = None
     for phase, dataset_opt in opt['datasets'].items():
         if phase == 'train':
             train_set = DatasetUSRNet(dataset_opt)
-            train_size = int(math.ceil(len(train_set) / dataset_opt['dataloader_batch_size']))
-            # logger.info('Number of train images: {:,d}, iters: {:,d}'.format(len(train_set), train_size))
             train_loader = DataLoader(train_set,
                                       batch_size=dataset_opt['dataloader_batch_size'],
                                       shuffle=dataset_opt['dataloader_shuffle'],
-                                      num_workers=4,
+                                      num_workers=2,
                                       drop_last=True,
                                       pin_memory=True)
 
-    print(train_size)
+        elif phase == 'test':
+            test_set = DatasetUSRNet(dataset_opt)
+            test_loader = DataLoader(test_set, batch_size=1,
+                                     shuffle=False, num_workers=1,
+                                     drop_last=False, pin_memory=True)
+        else:
+            raise NotImplementedError("Phase [%s] is not recognized." % phase)
+
     print(len(train_loader))
+    print(len(test_loader))
     for i, train_data in enumerate(train_loader):
         print(train_data['L'].shape)
         print(train_data['H'].shape)

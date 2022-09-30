@@ -17,21 +17,20 @@ def downsample_np(x, sf=3, center=False):
 
 
 def main():
-    model = USRNet()
-    model_pool = 'model_zoo'
-    model_name = 'usrnet'
-    model_path = os.path.join(model_pool, model_name + '.pth')
+    device = torch.device('cuda')
+
+    model = USRNet().to(device)
+    model_name = 'usrnet'  # usrnet_tiny
+    model_path = os.path.join('model_zoo', model_name + '.pth')
     kernels = loadmat(os.path.join('kernels', 'kernels_12.mat'))['kernels']
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
 
-    testsets = 'testsets'     # fixed
-    results = 'results'       # fixed
-    testset_name = 'set5'
+    testset_name = 'BSDS100'
     result_name = testset_name + '_' + model_name
 
-    L_path = os.path.join(testsets, testset_name)  # L_path and H_path, fixed, for Low-quality images
-    E_path = os.path.join(results, result_name)    # E_path, fixed, for Estimated images
+    L_path = os.path.join('testsets', testset_name)  # L_path and H_path, fixed, for Low-quality images
+    E_path = os.path.join('results', result_name)  # E_path, fixed, for Estimated images
     util.mkdir(E_path)
 
     L_paths = util.get_image_paths(L_path)
@@ -39,9 +38,7 @@ def main():
     noise_level_img = 0
     noise_level_model = noise_level_img
 
-    save_L = save_E = True
-
-    device = torch.device('cpu')
+    save_L = save_E = False
 
     for sf in [2]:
 
@@ -73,9 +70,8 @@ def main():
                 np.random.seed(0)  # for reproducibility
                 img_L += np.random.normal(0, noise_level_img, img_L.shape)  # add AWGN
 
-                # util.imshow(util.single2uint(img_L)) if show_img else None
-
                 x = util.single2tensor4(img_L)
+
                 k = util.single2tensor4(kernel[..., np.newaxis])
                 sigma = torch.tensor(noise_level_model).float().view([1, 1, 1, 1])
                 [x, k, sigma] = [el.to(device) for el in [x, k, sigma]]
@@ -97,7 +93,7 @@ def main():
                 # --------------------------------
                 # (4) img_LEH
                 # --------------------------------
-                # img_L = util.single2uint(img_L)
+                img_L = util.single2uint(img_L)
                 # if save_LEH:
                 #     k_v = kernel / np.max(kernel) * 1.2
                 #     k_v = util.single2uint(np.tile(k_v[..., np.newaxis], [1, 1, 3]))
@@ -120,10 +116,8 @@ def main():
                 #     '{:->4d}--> {:>10s} -- x{:>2d} --k{:>2d} PSNR: {:.2f}dB'.format(idx, img_name + ext, sf, k_index, psnr))
 
             ave_psnr_k = sum(test_results['psnr']) / len(test_results['psnr'])
-            # logger.info('------> Average PSNR(RGB) of ({}) scale factor: ({}), kernel: ({}) sigma: ({}): {:.2f} dB'.format(
-            #     testset_name, sf, k_index + 1, noise_level_model, ave_psnr_k))
-            # test_results_ave['psnr_sf_k'].append(ave_psnr_k)
-            print(ave_psnr_k)
+            print('------> Average PSNR(RGB) of ({}) scale factor: ({}), kernel: ({}) sigma: ({}): {:.2f} dB'.format(
+                testset_name, sf, k_index + 1, noise_level_model, ave_psnr_k))
 
 
 if __name__ == '__main__':

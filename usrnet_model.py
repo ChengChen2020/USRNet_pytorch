@@ -1,5 +1,4 @@
 import numpy as np
-from collections import OrderedDict
 
 import torch
 import torch.nn as nn
@@ -7,10 +6,6 @@ import torch.nn.functional as F
 
 
 def sequential(*args):
-    if len(args) == 1:
-        if isinstance(args[0], OrderedDict):
-            raise NotImplementedError('sequential does not support OrderedDict input.')
-        return args[0]  # No sequential is needed.
     modules = []
     for module in args:
         if isinstance(module, nn.Sequential):
@@ -33,33 +28,11 @@ def conv(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, bi
             L.append(nn.ConvTranspose2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding, bias=bias))
         elif t == 'B':
             L.append(nn.BatchNorm2d(out_channels, momentum=0.9, eps=1e-04, affine=True))
-        elif t == 'I':
-            L.append(nn.InstanceNorm2d(out_channels, affine=True))
         elif t == 'R':
             L.append(nn.ReLU(inplace=True))
-        elif t == 'r':
-            L.append(nn.ReLU(inplace=False))
-        elif t == 'L':
-            L.append(nn.LeakyReLU(negative_slope=1e-1, inplace=True))
-        elif t == 'l':
-            L.append(nn.LeakyReLU(negative_slope=1e-1, inplace=False))
-        elif t == '2':
-            L.append(nn.PixelShuffle(upscale_factor=2))
-        elif t == '3':
-            L.append(nn.PixelShuffle(upscale_factor=3))
-        elif t == '4':
-            L.append(nn.PixelShuffle(upscale_factor=4))
-        elif t == 'U':
-            L.append(nn.Upsample(scale_factor=2, mode='nearest'))
-        elif t == 'u':
-            L.append(nn.Upsample(scale_factor=3, mode='nearest'))
-        elif t == 'M':
-            L.append(nn.MaxPool2d(kernel_size=kernel_size, stride=stride, padding=0))
-        elif t == 'A':
-            L.append(nn.AvgPool2d(kernel_size=kernel_size, stride=stride, padding=0))
         else:
             raise NotImplementedError('Undefined type: '.format(t))
-    return sequential(*L)
+    return nn.Sequential(*L)
 
 
 # -------------------------------------------------------
@@ -69,9 +42,7 @@ class ResBlock(nn.Module):
     def __init__(self, in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, bias=True, mode='CRC'):
         super(ResBlock, self).__init__()
 
-        assert in_channels == out_channels, 'Only support in_channels==out_channels.'
-        if mode[0] in ['R', 'L']:
-            mode = mode[0].lower() + mode[1:]
+        assert in_channels == out_channels
 
         self.res = conv(in_channels, out_channels, kernel_size, stride, padding, bias, mode)
 
@@ -88,8 +59,7 @@ def upsample_convtranspose(in_channels=64, out_channels=3, padding=0, bias=True,
     kernel_size = int(mode[0])
     stride = int(mode[0])
     mode = mode.replace(mode[0], 'T')
-    up1 = conv(in_channels, out_channels, kernel_size, stride, padding, bias, mode)
-    return up1
+    return conv(in_channels, out_channels, kernel_size, stride, padding, bias, mode)
 
 
 # -------------------------------------------------------
@@ -100,31 +70,26 @@ def downsample_strideconv(in_channels=64, out_channels=64, padding=0, bias=True,
     kernel_size = int(mode[0])
     stride = int(mode[0])
     mode = mode.replace(mode[0], 'C')
-    down1 = conv(in_channels, out_channels, kernel_size, stride, padding, bias, mode)
-    return down1
+    return conv(in_channels, out_channels, kernel_size, stride, padding, bias, mode)
 
 
 # Prior Module
 class ResUNet(nn.Module):
-    def __init__(self, in_nc=4, out_nc=3, nc=(16, 32, 64, 64), act_mode='R', nb=2):
+    def __init__(self, in_nc=4, out_nc=3, nc=(16, 32, 64, 64)):
         super(ResUNet, self).__init__()
         self.m_head = conv(in_nc, nc[0], 3, bias=False, mode='C')
 
         # downsample
-        downsample_block = downsample_strideconv
+        self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[0], nc[1], bias=False, mode='2'))
+        self.m_down2 = sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[1], nc[2], bias=False, mode='2'))
+        self.m_down3 = sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[2], nc[3], bias=False, mode='2'))
 
-        self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[0], nc[1], bias=False, mode='2'))
-        self.m_down2 = sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[1], nc[2], bias=False, mode='2'))
-        self.m_down3 = sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)], downsample_block(nc[2], nc[3], bias=False, mode='2'))
-
-        self.m_body = sequential(*[ResBlock(nc[3], nc[3], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_body = sequential(*[ResBlock(nc[3], nc[3], bias=False, mode='CRC') for _ in range(2)])
 
         # upsample
-        upsample_block = upsample_convtranspose
-
-        self.m_up3 = sequential(upsample_block(nc[3], nc[2], bias=False, mode='2'), *[ResBlock(nc[2], nc[2], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
-        self.m_up2 = sequential(upsample_block(nc[2], nc[1], bias=False, mode='2'), *[ResBlock(nc[1], nc[1], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
-        self.m_up1 = sequential(upsample_block(nc[1], nc[0], bias=False, mode='2'), *[ResBlock(nc[0], nc[0], bias=False, mode='C'+act_mode+'C') for _ in range(nb)])
+        self.m_up3 = sequential(upsample_convtranspose(nc[3], nc[2], bias=False, mode='2'), *[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)])
+        self.m_up2 = sequential(upsample_convtranspose(nc[2], nc[1], bias=False, mode='2'), *[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)])
+        self.m_up1 = sequential(upsample_convtranspose(nc[1], nc[0], bias=False, mode='2'), *[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)])
 
         self.m_tail = conv(nc[0], out_nc, 3, bias=False, mode='C')
 
@@ -264,14 +229,19 @@ if __name__ == '__main__':
     k = torch.randn(1, 1, 25, 25)
     sf = 4
     sigma = torch.randn(1, 1, 1, 1)
-
-    # net = HyperNet()
-    # print(net(torch.cat((sigma, torch.tensor(sf).type_as(sigma).expand_as(sigma)), dim=1)).shape)
-
-    # net = ResUNet()
-    # print(net(x).shape) # Concat with noise
-
+    #
+    # # net = HyperNet()
+    # # print(net(torch.cat((sigma, torch.tensor(sf).type_as(sigma).expand_as(sigma)), dim=1)).shape)
+    #
+    # # net = ResUNet()
+    # # print(net(x).shape) # Concat with noise
+    #
     net = USRNet()
     total_params = sum(p.numel() for p in net.parameters())
     print(f'USRNet has a total of {total_params} parameters')
     print(net(x, k, sf, sigma).shape)
+
+    a = sequential(*[ResBlock(16, 16, bias=False, mode='CRC') for _ in range(2)],
+                   downsample_strideconv(16, 32, bias=False, mode='2'))
+
+    print(a)
