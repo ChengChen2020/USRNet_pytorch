@@ -81,7 +81,10 @@ def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1
 def main(json_path='config.json'):
 
     opt = utils_parameter.parse(json_path, is_train=True)
-    util.mkdirs((path for key, path in opt['log_path'].items() if 'pretrained' not in key))
+    opt_path = opt['log_path']
+    opt_net = opt['net']
+    opt_train = opt['train']
+    util.mkdirs((path for key, path in opt_path.items() if 'pretrained' not in key))
 
     device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
     # device = torch.device('cpu')
@@ -94,8 +97,6 @@ def main(json_path='config.json'):
     #                 nb=2, act_mode="R", downsample_mode='strideconv', upsample_mode="convtranspose")
 
     model = USRNet().to(device)
-    opt_net = opt['net']
-    opt_train = opt['train']
     init_weights(model,
                  init_type=opt_net['init_type'],
                  init_bn_type=opt_net['init_bn_type'],
@@ -168,8 +169,7 @@ def main(json_path='config.json'):
                 print(message)
 
             if current_step % opt_train['checkpoint_save'] == 0:
-                # model.save(current_step)
-                pass
+                save_network(opt_path['models'], model, 'G', current_step)
 
             if current_step % opt_train['checkpoint_test'] == 0:
 
@@ -183,7 +183,7 @@ def main(json_path='config.json'):
                     image_name_ext = os.path.basename(test_data['L_path'][0])
                     img_name, ext = os.path.splitext(image_name_ext)
 
-                    img_dir = os.path.join(opt['log_path']['images'], img_name)
+                    img_dir = os.path.join(opt_path['images'], img_name)
                     util.mkdir(img_dir)
 
                     L = test_data['L'].to(device)  # low-quality image
