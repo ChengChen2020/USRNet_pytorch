@@ -163,7 +163,7 @@ def main(json_path='config.json'):
 
             if current_step % opt_train['checkpoint_print'] == 0:
                 message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
-                                                                          scheduler.get_last_lr())
+                                                                          scheduler.get_last_lr()[0])
                 for k, v in log_dict.items():  # merge log information into message
                     message += '{:s}: {:.3e} '.format(k, v)
                 print(message)
