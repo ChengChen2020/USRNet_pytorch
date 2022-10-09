@@ -1,4 +1,5 @@
 import os
+import argparse
 import functools
 import numpy as np
 from collections import OrderedDict
@@ -227,6 +228,10 @@ def main(json_path='config.json'):
     save_network(opt_path['models'], model, 'USRNet', 'latest')
     print('End of training.')
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--resume', type=str, default='')
+opt = parser.parse_args()
 
 if __name__ == '__main__':
     main()

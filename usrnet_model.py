@@ -80,16 +80,22 @@ class ResUNet(nn.Module):
         self.m_head = conv(in_nc, nc[0], 3, bias=False, mode='C')
 
         # downsample
-        self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[0], nc[1], bias=False, mode='2'))
-        self.m_down2 = sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[1], nc[2], bias=False, mode='2'))
-        self.m_down3 = sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)], downsample_strideconv(nc[2], nc[3], bias=False, mode='2'))
+        self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)],
+                                  downsample_strideconv(nc[0], nc[1], bias=False, mode='2'))
+        self.m_down2 = sequential(*[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)],
+                                  downsample_strideconv(nc[1], nc[2], bias=False, mode='2'))
+        self.m_down3 = sequential(*[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)],
+                                  downsample_strideconv(nc[2], nc[3], bias=False, mode='2'))
 
         self.m_body = sequential(*[ResBlock(nc[3], nc[3], bias=False, mode='CRC') for _ in range(2)])
 
         # upsample
-        self.m_up3 = sequential(upsample_convtranspose(nc[3], nc[2], bias=False, mode='2'), *[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)])
-        self.m_up2 = sequential(upsample_convtranspose(nc[2], nc[1], bias=False, mode='2'), *[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)])
-        self.m_up1 = sequential(upsample_convtranspose(nc[1], nc[0], bias=False, mode='2'), *[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)])
+        self.m_up3 = sequential(upsample_convtranspose(nc[3], nc[2], bias=False, mode='2'),
+                                *[ResBlock(nc[2], nc[2], bias=False, mode='CRC') for _ in range(2)])
+        self.m_up2 = sequential(upsample_convtranspose(nc[2], nc[1], bias=False, mode='2'),
+                                *[ResBlock(nc[1], nc[1], bias=False, mode='CRC') for _ in range(2)])
+        self.m_up1 = sequential(upsample_convtranspose(nc[1], nc[0], bias=False, mode='2'),
+                                *[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)])
 
         self.m_tail = conv(nc[0], out_nc, 3, bias=False, mode='C')
 
