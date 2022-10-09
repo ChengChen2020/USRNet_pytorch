@@ -244,4 +244,4 @@ if __name__ == '__main__':
     a = sequential(*[ResBlock(16, 16, bias=False, mode='CRC') for _ in range(2)],
                    downsample_strideconv(16, 32, bias=False, mode='2'))
 
-    print(a)
+    # print(a)

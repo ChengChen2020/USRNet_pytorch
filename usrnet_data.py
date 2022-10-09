@@ -1,6 +1,4 @@
 import os
-# import math
-import random
 import numpy as np
 from scipy import ndimage
 from scipy.io import loadmat
@@ -12,8 +10,8 @@ from torch.utils.data import DataLoader
 import utils_parameter
 import utils_image as util
 
-from utils_kernel import gen_kernel
-from utils_kernel import blurkernel_synthesis
+from utils_kernel import motionblurkernel_synthesis
+from utils_kernel import gaussianblurkernel_synthesis
 
 
 class DatasetUSRNet(data.Dataset):
@@ -30,7 +28,7 @@ class DatasetUSRNet(data.Dataset):
         self.patch_size = 96
         self.sigma_max = 25
         self.scales = [1, 2, 3, 4]
-        self.sf_validation = 3
+        self.sf_validation = 3  # 1, 2, 3, 4
         self.kernels = loadmat(os.path.join('kernels', 'kernels_12.mat'))['kernels']  # for validation
 
         # -------------------
@@ -53,17 +51,16 @@ class DatasetUSRNet(data.Dataset):
             # 1) scale factor, ensure each batch only involves one scale factor
             # ---------------------------
             if self.count % self.opt['dataloader_batch_size'] == 0:
-                # sf = random.choice([1,2,3,4])
-                self.sf = random.choice(self.scales)
-                # self.count = 0  # optional
+                self.sf = np.random.choice(self.scales)
+                self.count = 0
             self.count += 1
             H, W, _ = img_H.shape
 
             # ----------------------------
             # randomly crop the patch
             # ----------------------------
-            rnd_h = random.randint(0, max(0, H - self.patch_size))
-            rnd_w = random.randint(0, max(0, W - self.patch_size))
+            rnd_h = np.random.randint(0, max(0, H - self.patch_size))
+            rnd_w = np.random.randint(0, max(0, W - self.patch_size))
             patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
 
             # ---------------------------
@@ -75,22 +72,19 @@ class DatasetUSRNet(data.Dataset):
             # ---------------------------
             # 2) kernel
             # ---------------------------
-            r_value = random.randint(0, 7)
-            if r_value > 3:
-                k = blurkernel_synthesis(h=25)  # motion blur
+            r_value = np.random.randint(0, 8)
+            if r_value > 4:
+                k = motionblurkernel_synthesis(k_size=25)  # motion blur
             else:
-                sf_k = random.choice(self.scales)
-                k = gen_kernel(scale_factor=np.array([sf_k, sf_k]))  # Gaussian blur
-                mode_k = random.randint(0, 7)
+                sf_k = np.random.choice(self.scales)
+                k = gaussianblurkernel_synthesis(scale_factor=np.array([sf_k, sf_k]))  # Gaussian blur
+                mode_k = np.random.randint(0, 8)
                 k = util.augment_img(k, mode=mode_k)
 
             # ---------------------------
             # 3) noise level
             # ---------------------------
-            if random.randint(0, 8) == 1:
-                noise_level = 0/255.0
-            else:
-                noise_level = np.random.randint(0, self.sigma_max)/255.0
+            noise_level = np.random.randint(0, self.sigma_max)/255.0
 
             # ---------------------------
             # Low-quality image
@@ -105,7 +99,7 @@ class DatasetUSRNet(data.Dataset):
 
             k = self.kernels[0, 0].astype(np.float64)  # validation kernel
             k /= np.sum(k)
-            noise_level = 0. / 255.0  # validation noise level
+            noise_level = 0.  # validation noise level
 
             # ------------------------------------
             # modcrop

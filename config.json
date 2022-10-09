@@ -53,8 +53,8 @@
     "scheduler_gamma": 0.5,
 
     "checkpoint_test": 1000,
-    "checkpoint_save": 5000,
-    "checkpoint_print": 100
+    "checkpoint_save": 1000,
+    "checkpoint_print": 200
   },
 
   "test": {

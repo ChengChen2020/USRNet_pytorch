@@ -1,33 +1,11 @@
 import cv2
 import numpy as np
-# import matplotlib.pyplot as plt
 from scipy.signal import convolve2d
 
 
-def fspecial_gauss(size, sigma):
-    x, y = np.mgrid[-size // 2 + 1: size // 2 + 1, -size // 2 + 1: size // 2 + 1]
-    g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
-    return g / g.sum()
-
-
-def fspecial_gaussian(hsize, sigma):
-    hsize = [hsize, hsize]
-    siz = [(hsize[0]-1.0)/2.0, (hsize[1]-1.0)/2.0]
-    std = sigma
-    [x, y] = np.meshgrid(np.arange(-siz[1], siz[1]+1), np.arange(-siz[0], siz[0]+1))
-    arg = -(x*x + y*y)/(2*std*std)
-    h = np.exp(arg)
-    h[h < np.finfo(float).eps * h.max()] = 0
-    sumh = h.sum()
-    if sumh != 0:
-        h = h/sumh
-    return h
-
-
-def blurkernel_synthesis(h=37, w=None):
-    # https://github.com/tkkcc/prior/blob/879a0b6c117c810776d8cc6b63720bf29f7d0cc4/util/gen_kernel.py
-    w = h if w is None else w
-    kdims = [h, w]
+# https://github.com/tkkcc/prior/blob/879a0b6c117c810776d8cc6b63720bf29f7d0cc4/util/gen_kernel.py
+def motionblurkernel_synthesis(k_size=25):
+    kdims = [k_size, k_size]
     x = randomTrajectory(250)
     k = None
     while k is None:
@@ -38,9 +16,10 @@ def blurkernel_synthesis(h=37, w=None):
     pad_width = [(pad_width[0],), (pad_width[1],)]
 
     if pad_width[0][0] < 0 or pad_width[1][0] < 0:
-        k = k[0:h, 0:h]
+        k = k[0:k_size, 0:k_size]
     else:
         k = np.pad(k, pad_width, "constant")
+
     x1, x2 = k.shape
     if np.random.randint(0, 4) == 1:
         k = cv2.resize(k, (np.random.randint(x1, 5 * x1), np.random.randint(x2, 5 * x2)), interpolation=cv2.INTER_LINEAR)
@@ -48,9 +27,17 @@ def blurkernel_synthesis(h=37, w=None):
         k = k[(y1 - x1) // 2: (y1 - x1) // 2 + x1, (y2 - x2) // 2: (y2 - x2) // 2 + x2]
 
     if np.sum(k) < 0.1:
-        k = fspecial_gaussian(h, 0.1 + 6 * np.random.rand(1))
+        k = fspecial_gauss(k_size, 0.1 + 6 * np.random.rand(1))
+
     k = k / np.sum(k)
+
     return k
+
+
+def fspecial_gauss(size, sigma):
+    x, y = np.mgrid[-size // 2 + 1: size // 2 + 1, -size // 2 + 1: size // 2 + 1]
+    g = np.exp(-((x ** 2 + y ** 2) / (2.0 * sigma ** 2)))
+    return g / g.sum()
 
 
 def kernelFromTrajectory(x):
@@ -88,7 +75,7 @@ def randomTrajectory(t):
     x = np.zeros((3, t))
     v = np.random.randn(3, t)
     r = np.zeros((3, t))
-    trv = 1 / 1
+    trv = 1
     trr = 2 * np.pi / t
     for t in range(1, t):
         F_rot = np.random.randn(3) / (t + 1) + r[:, t - 1]
@@ -110,15 +97,8 @@ def rot3D(x, r):
     return x
 
 
-def gen_kernel(k_size=np.array([25, 25]), scale_factor=np.array([4, 4]), min_var=0.6, max_var=12., noise_level=0):
-    """"
-    # modified version of https://github.com/assafshocher/BlindSR_dataset_generator
-    # Kai Zhang
-    # min_var = 0.175 * sf  # variance of the gaussian kernel will be sampled between min_var and max_var
-    # max_var = 2.5 * sf
-    """
-    # sf = np.random.choice([1, 2, 3, 4])
-    # scale_factor = np.array([sf, sf])
+# https://github.com/assafshocher/BlindSR_dataset_generator
+def gaussianblurkernel_synthesis(k_size=np.array([25, 25]), scale_factor=np.array([4, 4]), min_var=0.6, max_var=12., noise_level=0):
     # Set random eigen-vals (lambdas) and angle (theta) for COV matrix
     lambda_1 = min_var + np.random.rand() * (max_var - min_var)
     lambda_2 = min_var + np.random.rand() * (max_var - min_var)
@@ -133,7 +113,7 @@ def gen_kernel(k_size=np.array([25, 25]), scale_factor=np.array([4, 4]), min_var
     INV_SIGMA = np.linalg.inv(SIGMA)[None, None, :, :]
 
     # Set expectation position (shifting kernel for aligned image)
-    MU = k_size // 2 - 0.5 * (scale_factor - 1)  # - 0.5 * (scale_factor - k_size % 2)
+    MU = k_size // 2 - 0.5 * (scale_factor - 1)
     MU = MU[None, None, :, None]
 
     # Create meshgrid for Gaussian
@@ -141,22 +121,33 @@ def gen_kernel(k_size=np.array([25, 25]), scale_factor=np.array([4, 4]), min_var
     Z = np.stack([X, Y], 2)[:, :, :, None]
 
     # Calcualte Gaussian for every pixel of the kernel
-    ZZ = Z-MU
+    ZZ = Z - MU
     ZZ_t = ZZ.transpose(0, 1, 3, 2)
     raw_kernel = np.exp(-0.5 * np.squeeze(ZZ_t @ INV_SIGMA @ ZZ)) * (1 + noise)
 
-    # shift the kernel so it will be centered
-    # raw_kernel_centered = kernel_shift(raw_kernel, scale_factor)
+    # shift the kernel so it will be centered ?
 
     # Normalize the kernel and return
-    # kernel = raw_kernel_centered / np.sum(raw_kernel_centered)
     kernel = raw_kernel / np.sum(raw_kernel)
 
-    # plt.imshow(kernel, interpolation="nearest", cmap="gray")
-    # plt.show()
     return kernel
 
 
 if __name__ == "__main__":
-    print(gen_kernel(noise_level=25).shape)
-    print(blurkernel_synthesis().shape)
+    import matplotlib.pyplot as plt
+    for i in range(10):
+        k = gaussianblurkernel_synthesis(noise_level=np.random.randint(0, 25))
+        # k = motionblurkernel_synthesis()
+        # k = fspecial_gauss(25, 2)
+        print(k.shape)
+        plt.imshow(k, interpolation="nearest", cmap="gray")
+        plt.show()
+    # for i in range(10):
+    #     x = randomTrajectory(250)
+    #     # print(x.shape)
+    #     # plt.plot(x[0])
+    #     # plt.plot(x[1])
+    #     # plt.plot(x[2])
+    #     # plt.show()
+    #     k = kernelFromTrajectory(x)
+    #     print(k.shape)

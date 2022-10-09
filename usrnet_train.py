@@ -80,6 +80,11 @@ def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1
 
 def main(json_path='config.json'):
 
+    seed = 0
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
     opt = utils_parameter.parse(json_path, is_train=True)
     opt_path = opt['log_path']
     opt_net = opt['net']
@@ -139,9 +144,10 @@ def main(json_path='config.json'):
     border = opt['scale']
 
     log_dict = OrderedDict()
-    for epoch in range(100):  # keep running
+    for epoch in range(1000):  # keep running
 
         for i, train_data in enumerate(train_loader):
+
             model.train()
             current_step += 1
 
@@ -169,7 +175,7 @@ def main(json_path='config.json'):
                 print(message)
 
             if current_step % opt_train['checkpoint_save'] == 0:
-                save_network(opt_path['models'], model, 'G', current_step)
+                save_network(opt_path['models'], model, 'USRNet', current_step)
 
             if current_step % opt_train['checkpoint_test'] == 0:
 
@@ -217,7 +223,9 @@ def main(json_path='config.json'):
 
                 print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
 
-    # model.save('latest')
+    print('Saving the final model.')
+    save_network(opt_path['models'], model, 'USRNet', 'latest')
+    print('End of training.')
 
 
 if __name__ == '__main__':
