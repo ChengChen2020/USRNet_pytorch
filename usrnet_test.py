@@ -119,7 +119,7 @@ def main(model_name, testset_name):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--testset_name', type=str, default='BSD100')
+parser.add_argument('--testset_name', type=str, default='BSDS100')
 parser.add_argument('--model_name', type=str, default='latest')
 opt = parser.parse_args()
 
