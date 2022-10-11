@@ -1,5 +1,5 @@
 import os
-# import cv2
+import argparse
 import numpy as np
 from scipy import ndimage
 from scipy.io import loadmat
@@ -16,17 +16,15 @@ def downsample_np(x, sf=3, center=False):
     return x[st::sf, st::sf, ...]
 
 
-def main():
+def main(model_name, testset_name):
     device = torch.device('cuda')
 
     model = USRNet().to(device)
-    model_name = 'usrnet'  # usrnet_tiny
     model_path = os.path.join('model_zoo', model_name + '.pth')
     kernels = loadmat(os.path.join('kernels', 'kernels_12.mat'))['kernels']
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
 
-    testset_name = 'BSDS100'
     result_name = testset_name + '_' + model_name
 
     L_path = os.path.join('testsets', testset_name)  # L_path and H_path, fixed, for Low-quality images
@@ -40,14 +38,14 @@ def main():
 
     save_L = save_E = False
 
-    for sf in [2]:
+    for sf in [2, 3, 4]:
 
         for k_index in range(kernels.shape[1]):
             test_results = OrderedDict()
             test_results['psnr'] = []
             kernel = kernels[0, k_index].astype(np.float64)
 
-            util.surf(kernel)
+            # util.surf(kernel)
 
             idx = 0
 
@@ -120,5 +118,10 @@ def main():
                 testset_name, sf, k_index + 1, noise_level_model, ave_psnr_k))
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--testset_name', type=str, default='BSD100')
+parser.add_argument('--model_name', type=str, default='latest')
+opt = parser.parse_args()
+
 if __name__ == '__main__':
-    main()
+    main(opt.model_name, opt.testset_name)
