@@ -1,5 +1,5 @@
 {
-  "task": "usrnet",
+  "task": "usrnetv1",
   "scale": 4,
   "gpu_ids": [0],
 
