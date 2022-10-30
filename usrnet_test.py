@@ -1,8 +1,8 @@
 import os
 import argparse
 import numpy as np
-from scipy import ndimage
 from scipy.io import loadmat
+from scipy.ndimage import convolve
 from collections import OrderedDict
 
 import torch
@@ -60,7 +60,7 @@ def main(model_name, testset_name):
                 img_H = util.modcrop(img_H, np.lcm(sf, 8))  # modcrop
 
                 # generate degraded LR image
-                img_L = ndimage.filters.convolve(img_H, kernel[..., np.newaxis], mode='wrap')  # blur
+                img_L = convolve(img_H, kernel[..., np.newaxis], mode='wrap')  # blur
                 img_L = downsample_np(img_L, sf, center=False)  # downsample, standard s-fold downsampler
 
                 img_L = util.uint2single(img_L)  # uint2single
@@ -119,7 +119,7 @@ def main(model_name, testset_name):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--testset_name', type=str, default='BSDS100')
+parser.add_argument('--testset_name', type=str, default='BSD68')
 parser.add_argument('--model_name', type=str, default='latest')
 opt = parser.parse_args()
 

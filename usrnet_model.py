@@ -32,7 +32,7 @@ def conv(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, bi
             L.append(nn.ReLU(inplace=True))
         else:
             raise NotImplementedError('Undefined type: '.format(t))
-    return nn.Sequential(*L)
+    return sequential(*L)
 
 
 # -------------------------------------------------------
@@ -77,7 +77,7 @@ def downsample_strideconv(in_channels=64, out_channels=64, padding=0, bias=True,
 class ResUNet(nn.Module):
     def __init__(self, in_nc=4, out_nc=3, nc=(16, 32, 64, 64)):
         super(ResUNet, self).__init__()
-        self.m_head = conv(in_nc, nc[0], 3, bias=False, mode='C')
+        self.m_head = nn.Conv2d(in_nc, nc[0], 3, padding=1, bias=False)
 
         # downsample
         self.m_down1 = sequential(*[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)],
@@ -97,7 +97,7 @@ class ResUNet(nn.Module):
         self.m_up1 = sequential(upsample_convtranspose(nc[1], nc[0], bias=False, mode='2'),
                                 *[ResBlock(nc[0], nc[0], bias=False, mode='CRC') for _ in range(2)])
 
-        self.m_tail = conv(nc[0], out_nc, 3, bias=False, mode='C')
+        self.m_tail = nn.Conv2d(nc[0], out_nc, 3, padding=1, bias=False)
 
     def forward(self, x):
 

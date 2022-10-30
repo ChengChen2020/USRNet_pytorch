@@ -7,7 +7,7 @@
     "train": {
       "name": "train_dataset",
       "dataset_type": "usrnet",
-      "dataroot_H": "trainsets/DIV2K_train_HR",
+      "dataroot_H": "trainsets/train_combined",
       "dataroot_L": null,
       "H_size": 96,
       "use_flip": true,

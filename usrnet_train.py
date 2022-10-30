@@ -93,7 +93,6 @@ def main(json_path='config.json'):
     util.mkdirs((path for key, path in opt_path.items() if 'pretrained' not in key))
 
     device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
-    # device = torch.device('cpu')
 
     # if 'tiny' in model_name:
     #     model = net(n_iter=6, h_nc=32, in_nc=4, out_nc=3, nc=[16, 32, 64, 64],
@@ -107,7 +106,6 @@ def main(json_path='config.json'):
                  init_type=opt_net['init_type'],
                  init_bn_type=opt_net['init_bn_type'],
                  gain=opt_net['init_gain'])
-
     optimizer = Adam(model.parameters(), lr=1e-4,
                      betas=opt_train['optimizer_betas'],
                      weight_decay=opt_train['optimizer_wd'])
@@ -116,29 +114,17 @@ def main(json_path='config.json'):
                             opt_train['scheduler_gamma']
                             )
     criterion = nn.L1Loss().to(device)
-
-    train_loader = test_loader = None
-    for phase, dataset_opt in opt['datasets'].items():
-        if phase == 'train':
-            train_set = DatasetUSRNet(dataset_opt)
-            # train_size = int(math.ceil(len(train_set) / dataset_opt['dataloader_batch_size']))
-            # logger.info('Number of train images: {:,d}, iters: {:,d}'.format(len(train_set), train_size))
-            train_loader = DataLoader(train_set,
-                                      batch_size=dataset_opt['dataloader_batch_size'],
-                                      shuffle=dataset_opt['dataloader_shuffle'],
-                                      num_workers=1,
-                                      drop_last=True,
-                                      pin_memory=True)
-        elif phase == 'test':
-            test_set = DatasetUSRNet(dataset_opt)
-            test_loader = DataLoader(test_set, batch_size=1,
-                                     shuffle=False, num_workers=1,
-                                     drop_last=False, pin_memory=True)
-
-        else:
-            assert False
-
-    assert train_loader is not None and test_loader is not None
+    train_set = DatasetUSRNet('train')
+    train_loader = DataLoader(train_set,
+                              batch_size=48,
+                              shuffle=True,
+                              num_workers=2,
+                              drop_last=True,
+                              pin_memory=True)
+    test_set = DatasetUSRNet('test')
+    test_loader = DataLoader(test_set, batch_size=1,
+                             shuffle=False, num_workers=1,
+                             drop_last=False, pin_memory=True)
     print("Data Loader successful!")
 
     current_step = 0
@@ -155,7 +141,7 @@ def main(json_path='config.json'):
             L = train_data['L'].to(device)  # low-quality image
             H = train_data['H'].to(device)
             k = train_data['k'].to(device)  # blur kernel
-            sf = np.int(train_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
+            sf = int(train_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
             sigma = train_data['sigma'].to(device)  # noise level
 
             optimizer.zero_grad()
@@ -196,7 +182,7 @@ def main(json_path='config.json'):
                     L = test_data['L'].to(device)  # low-quality image
                     H = test_data['H'].to(device)
                     k = test_data['k'].to(device)  # blur kernel
-                    sf = np.int(test_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
+                    sf = int(test_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
                     sigma = test_data['sigma'].to(device)  # noise level
 
                     with torch.no_grad():
