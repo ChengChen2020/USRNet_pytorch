@@ -1,9 +1,12 @@
+out.txt
+*.tar
 *.zip
 .DS_Store
 .idea/
 testsets/
 trainsets/
 train_log/
+test_log/
 model_zoo/
 results/
 

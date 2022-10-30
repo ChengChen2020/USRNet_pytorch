@@ -1,7 +1,9 @@
 import os
+import time
 import argparse
 import functools
 import numpy as np
+from tqdm import tqdm
 from collections import OrderedDict
 
 import torch
@@ -12,10 +14,11 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.nn.parallel import DataParallel, DistributedDataParallel
 
-import utils_parameter
 import utils_image as util
 from usrnet_model import USRNet
 from usrnet_data import DatasetUSRNet
+
+CUDA_VISIBLE_DEVICES = 3
 
 
 def get_bare_model(network):
@@ -58,7 +61,6 @@ def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1
 
             if init_type == 'orthogonal':
                 init.orthogonal_(m.weight.data, gain=gain)
-
             else:
                 raise NotImplementedError('Initialization method [{:s}] is not implemented'.format(init_type))
 
@@ -79,70 +81,64 @@ def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1
     net.apply(fn)
 
 
-def main(json_path='config.json'):
+def main():
 
     seed = 0
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-    opt = utils_parameter.parse(json_path, is_train=True)
-    opt_path = opt['log_path']
-    opt_net = opt['net']
-    opt_train = opt['train']
-    util.mkdirs((path for key, path in opt_path.items() if 'pretrained' not in key))
+    path_task = os.path.join('train_log', time.strftime("%Y%m%d-%H%M%S"))
+    path_model = os.path.join(path_task, 'models')
+    path_image = os.path.join(path_task, 'images')
 
-    device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
+    util.mkdirs([path_task, path_model, path_image])
 
-    # if 'tiny' in model_name:
-    #     model = net(n_iter=6, h_nc=32, in_nc=4, out_nc=3, nc=[16, 32, 64, 64],
-    #                 nb=2, act_mode="R", downsample_mode='strideconv', upsample_mode="convtranspose")
-    # else:
-    #     model = net(n_iter=8, h_nc=64, in_nc=4, out_nc=3, nc=[64, 128, 256, 512],
-    #                 nb=2, act_mode="R", downsample_mode='strideconv', upsample_mode="convtranspose")
+    torch.cuda.set_device(1)
+    print('Current device:', torch.cuda.current_device())
+    device = torch.device('cuda')
 
-    model = USRNet().to(device)
+    device_ids = [1, 2]
+    model = nn.DataParallel(USRNet(), device_ids=device_ids)
+    model = model.to(device)
     init_weights(model,
-                 init_type=opt_net['init_type'],
-                 init_bn_type=opt_net['init_bn_type'],
-                 gain=opt_net['init_gain'])
-    optimizer = Adam(model.parameters(), lr=1e-4,
-                     betas=opt_train['optimizer_betas'],
-                     weight_decay=opt_train['optimizer_wd'])
+                 init_type="orthogonal",
+                 init_bn_type="uniform",
+                 gain=0.2)
+    optimizer = Adam(model.parameters(), lr=1e-4, betas=[0.9, 0.999])
     scheduler = MultiStepLR(optimizer,
-                            opt_train['scheduler_milestones'],
-                            opt_train['scheduler_gamma']
+                            milestones=[10000, 20000, 30000, 40000],
+                            gamma=0.5
                             )
     criterion = nn.L1Loss().to(device)
-    train_set = DatasetUSRNet('train')
+    train_set = DatasetUSRNet('train', opt.train_path, opt.batch_size, opt.patch_size)
     train_loader = DataLoader(train_set,
-                              batch_size=48,
+                              batch_size=opt.batch_size,
                               shuffle=True,
                               num_workers=2,
                               drop_last=True,
                               pin_memory=True)
-    test_set = DatasetUSRNet('test')
-    test_loader = DataLoader(test_set, batch_size=1,
-                             shuffle=False, num_workers=1,
-                             drop_last=False, pin_memory=True)
+    valid_set = DatasetUSRNet('test', opt.valid_path, 1)
+    valid_loader = DataLoader(valid_set, batch_size=1,
+                              shuffle=False, num_workers=1,
+                              drop_last=False, pin_memory=True)
     print("Data Loader successful!")
 
     current_step = 0
-    border = opt['scale']
 
     log_dict = OrderedDict()
-    for epoch in range(1000):  # keep running
+    for epoch in tqdm(range(1000)):
 
         for i, train_data in enumerate(train_loader):
 
             model.train()
             current_step += 1
 
-            L = train_data['L'].to(device)  # low-quality image
+            L = train_data['L'].to(device)
             H = train_data['H'].to(device)
-            k = train_data['k'].to(device)  # blur kernel
-            sf = int(train_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
-            sigma = train_data['sigma'].to(device)  # noise level
+            k = train_data['k'].to(device)
+            sf = int(train_data['sf'][0, ...].squeeze().cpu().numpy())
+            sigma = train_data['sigma'].to(device)
 
             optimizer.zero_grad()
             out = model(L, k, sf, sigma)
@@ -154,36 +150,36 @@ def main(json_path='config.json'):
             optimizer.step()
             scheduler.step()
 
-            if current_step % opt_train['checkpoint_print'] == 0:
+            if current_step % opt.checkpoint_print == 0:
                 message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
                                                                           scheduler.get_last_lr()[0])
-                for k, v in log_dict.items():  # merge log information into message
+                for k, v in log_dict.items():
                     message += '{:s}: {:.3e} '.format(k, v)
                 print(message)
 
-            if current_step % opt_train['checkpoint_save'] == 0:
-                save_network(opt_path['models'], model, 'USRNet', current_step)
+            if current_step % opt.checkpoint_save == 0:
+                save_network(path_model, model, 'USRNet', current_step)
 
-            if current_step % opt_train['checkpoint_test'] == 0:
+            if current_step % opt.checkpoint_test == 0:
 
                 model.eval()
 
                 avg_psnr = 0.0
                 idx = 0
 
-                for test_data in test_loader:
+                for valid_data in valid_loader:
                     idx += 1
-                    image_name_ext = os.path.basename(test_data['L_path'][0])
-                    img_name, ext = os.path.splitext(image_name_ext)
+                    image_name_ext = os.path.basename(valid_data['path'][0])
+                    img_name, _ = os.path.splitext(image_name_ext)
 
-                    img_dir = os.path.join(opt_path['images'], img_name)
+                    img_dir = os.path.join(path_image, img_name)
                     util.mkdir(img_dir)
 
-                    L = test_data['L'].to(device)  # low-quality image
-                    H = test_data['H'].to(device)
-                    k = test_data['k'].to(device)  # blur kernel
-                    sf = int(test_data['sf'][0, ...].squeeze().cpu().numpy())  # scale factor
-                    sigma = test_data['sigma'].to(device)  # noise level
+                    L = valid_data['L'].to(device)
+                    H = valid_data['H'].to(device)
+                    k = valid_data['k'].to(device)
+                    sf = int(valid_data['sf'][0, ...].squeeze().cpu().numpy())
+                    sigma = valid_data['sigma'].to(device)
 
                     with torch.no_grad():
                         E = model(L, k, sf, sigma)
@@ -191,18 +187,12 @@ def main(json_path='config.json'):
                     E_img = util.tensor2uint(E.detach()[0].float().cpu())
                     H_img = util.tensor2uint(H.detach()[0].float().cpu())
 
-                    # -----------------------
-                    # save estimated image E
-                    # -----------------------
+                    # Save estimated image E
                     save_img_path = os.path.join(img_dir, '{:s}_{:d}.png'.format(img_name, current_step))
                     util.imsave(E_img, save_img_path)
 
-                    # -----------------------
-                    # calculate PSNR
-                    # -----------------------
-                    current_psnr = util.calculate_psnr(E_img, H_img, border=border)
-
-                    # logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
+                    # PSNR
+                    current_psnr = util.calculate_psnr(E_img, H_img, border=sf ** 2)
 
                     avg_psnr += current_psnr
 
@@ -211,13 +201,20 @@ def main(json_path='config.json'):
                 print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
 
     print('Saving the final model.')
-    save_network(opt_path['models'], model, 'USRNet', 'latest')
+    save_network('model_zoo', model, 'USRNet', 'latest')
     print('End of training.')
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--resume', type=str, default='')
+parser.add_argument('--batch_size', type=int, default=48)
+parser.add_argument('--patch_size', type=int, default=96)
+parser.add_argument('--train_path', type=str, default='trainsets/train_combined')
+parser.add_argument('--valid_path', type=str, default='testsets/Set5')
+parser.add_argument('--checkpoint_print', type=int, default=200)
+parser.add_argument('--checkpoint_save', type=int, default=1000)
+parser.add_argument('--checkpoint_test', type=int, default=1000)
 opt = parser.parse_args()
+
 
 if __name__ == '__main__':
     main()

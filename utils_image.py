@@ -63,7 +63,6 @@ def _get_paths_from_images(path):
 
 
 def single2uint(img):
-
     return np.uint8((img.clip(0, 1)*255.).round())
 
 
