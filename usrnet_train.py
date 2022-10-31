@@ -152,7 +152,7 @@ def main():
                     avg_psnr += current_psnr
 
                 avg_psnr = avg_psnr / idx
-                print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
+                print('<epoch:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, avg_psnr))
 
     print('Saving the final model.')
     save_network('model_zoo', model, 'USRNet', 'latest')
