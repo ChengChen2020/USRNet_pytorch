@@ -3,7 +3,6 @@ import time
 import argparse
 import functools
 import numpy as np
-from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -48,17 +47,12 @@ def init_weights(m):
 
 
 def main():
-
     seed = 0
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-    path_task = os.path.join('train_log', time.strftime("%Y%m%d-%H%M%S"))
-    path_model = os.path.join(path_task, 'models')
-    path_image = os.path.join(path_task, 'images')
-
-    util.mkdirs(['model_zoo', path_task, path_model, path_image])
+    util.mkdir('model_zoo')
 
     torch.cuda.set_device(1)
     print('Current device:', torch.cuda.current_device())
@@ -92,14 +86,11 @@ def main():
     print("Valid Loader size:", len(valid_loader))
     print("Data Loader successful!")
 
-    current_step = 0
-
-    for epoch in tqdm(range(1000)):
+    for epoch in range(1, 1001):
 
         for i, train_data in enumerate(train_loader):
 
             model.train()
-            current_step += 1
 
             L = train_data['L'].to(device)
             H = train_data['H'].to(device)
@@ -115,16 +106,19 @@ def main():
             optimizer.step()
             scheduler.step()
 
-            if current_step % opt.checkpoint_print == 0:
-                message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
-                                                                          scheduler.get_last_lr()[0])
-                message += '{:s}: {:.3e} '.format('loss', loss.item())
-                print(message)
+            message = '<epoch:{:3d}, lr:{:.3e}> '.format(epoch, scheduler.get_last_lr()[0])
+            message += '{:s}: {:.3e} '.format('loss', loss.item())
+            print(message)
 
-            if current_step % opt.checkpoint_save == 0:
+            if epoch % opt.checkpoint == 0:
+                path_task = os.path.join('train_log', time.strftime("%Y%m%d-%H%M%S"))
+                path_model = os.path.join(path_task, 'models')
+                path_image = os.path.join(path_task, 'images')
+
+                utils.mkdirs([path_task, path_model, path_image])
+
                 save_network(path_model, model, 'USRNet', current_step)
 
-            if current_step % opt.checkpoint_test == 0:
                 model.eval()
                 avg_psnr = 0.0
                 idx = 0
@@ -170,9 +164,7 @@ parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--patch_size', type=int, default=96)
 parser.add_argument('--train_path', type=str, default='trainsets/train_combined')
 parser.add_argument('--valid_path', type=str, default='testsets/Set5')
-parser.add_argument('--checkpoint_print', type=int, default=50)
-parser.add_argument('--checkpoint_save', type=int, default=500)
-parser.add_argument('--checkpoint_test', type=int, default=500)
+parser.add_argument('--checkpoint', type=int, default=10)
 opt = parser.parse_args()
 
 
