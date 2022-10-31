@@ -4,7 +4,6 @@ import argparse
 import functools
 import numpy as np
 from tqdm import tqdm
-from collections import OrderedDict
 
 import torch
 import torch.nn as nn
@@ -40,45 +39,12 @@ def save_network(save_dir, network, network_label, iter_label):
     torch.save(state_dict, save_path)
 
 
-def init_weights(net, init_type='xavier_uniform', init_bn_type='uniform', gain=1):
-    """
-    # Kai Zhang, https://github.com/cszn/KAIR
-    #
-    # Args:
-    #   init_type:
-    #       default, none: pass init_weights
-    #       normal; normal; xavier_normal; xavier_uniform;
-    #       kaiming_normal; kaiming_uniform; orthogonal
-    #   init_bn_type:
-    #       uniform; constant
-    #   gain:
-    #       0.2
-    """
-    def init_fn(m, init_type='xavier_uniform', init_bn_type='uniform', gain=1):
-        classname = m.__class__.__name__
-
-        if classname.find('Conv') != -1 or classname.find('Linear') != -1:
-
-            if init_type == 'orthogonal':
-                init.orthogonal_(m.weight.data, gain=gain)
-            else:
-                raise NotImplementedError('Initialization method [{:s}] is not implemented'.format(init_type))
-
-            if m.bias is not None:
-                m.bias.data.zero_()
-
-        elif classname.find('BatchNorm2d') != -1:
-
-            if init_bn_type == 'uniform':  # preferred
-                if m.affine:
-                    init.uniform_(m.weight.data, 0.1, 1.0)
-                    init.constant_(m.bias.data, 0.0)
-            else:
-                raise NotImplementedError('Initialization method [{:s}] is not implemented'.format(init_bn_type))
-
-    print('Initialization method [{:s} + {:s}], gain is [{:.2f}]'.format(init_type, init_bn_type, gain))
-    fn = functools.partial(init_fn, init_type=init_type, init_bn_type=init_bn_type, gain=gain)
-    net.apply(fn)
+def init_weights(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        init.orthogonal_(m.weight.data, gain=0.2)
+        if m.bias is not None:
+            m.bias.data.zero_()
 
 
 def main():
@@ -92,7 +58,7 @@ def main():
     path_model = os.path.join(path_task, 'models')
     path_image = os.path.join(path_task, 'images')
 
-    util.mkdirs([path_task, path_model, path_image])
+    util.mkdirs(['model_zoo', path_task, path_model, path_image])
 
     torch.cuda.set_device(1)
     print('Current device:', torch.cuda.current_device())
@@ -101,10 +67,8 @@ def main():
     device_ids = [1, 2]
     model = nn.DataParallel(USRNet(), device_ids=device_ids)
     model = model.to(device)
-    init_weights(model,
-                 init_type="orthogonal",
-                 init_bn_type="uniform",
-                 gain=0.2)
+    model.apply(init_weights)
+
     optimizer = Adam(model.parameters(), lr=1e-4, betas=[0.9, 0.999])
     scheduler = MultiStepLR(optimizer,
                             milestones=[10000, 20000, 30000, 40000],
@@ -122,11 +86,14 @@ def main():
     valid_loader = DataLoader(valid_set, batch_size=1,
                               shuffle=False, num_workers=1,
                               drop_last=False, pin_memory=True)
+    print("Train Dataset size:", len(train_loader.dataset))
+    print("Train Loader size:", len(train_loader))
+    print("Valid Dataset size:", len(valid_loader.dataset))
+    print("Valid Loader size:", len(valid_loader))
     print("Data Loader successful!")
 
     current_step = 0
 
-    log_dict = OrderedDict()
     for epoch in tqdm(range(1000)):
 
         for i, train_data in enumerate(train_loader):
@@ -145,25 +112,20 @@ def main():
             loss = criterion(out, H)
             loss.backward()
 
-            log_dict['loss'] = loss.item()
-
             optimizer.step()
             scheduler.step()
 
             if current_step % opt.checkpoint_print == 0:
                 message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step,
                                                                           scheduler.get_last_lr()[0])
-                for k, v in log_dict.items():
-                    message += '{:s}: {:.3e} '.format(k, v)
+                message += '{:s}: {:.3e} '.format('loss', loss.item())
                 print(message)
 
             if current_step % opt.checkpoint_save == 0:
                 save_network(path_model, model, 'USRNet', current_step)
 
             if current_step % opt.checkpoint_test == 0:
-
                 model.eval()
-
                 avg_psnr = 0.0
                 idx = 0
 
@@ -193,11 +155,9 @@ def main():
 
                     # PSNR
                     current_psnr = util.calculate_psnr(E_img, H_img, border=sf ** 2)
-
                     avg_psnr += current_psnr
 
                 avg_psnr = avg_psnr / idx
-
                 print('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step, avg_psnr))
 
     print('Saving the final model.')
@@ -206,13 +166,13 @@ def main():
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=48)
+parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--patch_size', type=int, default=96)
 parser.add_argument('--train_path', type=str, default='trainsets/train_combined')
 parser.add_argument('--valid_path', type=str, default='testsets/Set5')
-parser.add_argument('--checkpoint_print', type=int, default=200)
-parser.add_argument('--checkpoint_save', type=int, default=1000)
-parser.add_argument('--checkpoint_test', type=int, default=1000)
+parser.add_argument('--checkpoint_print', type=int, default=50)
+parser.add_argument('--checkpoint_save', type=int, default=500)
+parser.add_argument('--checkpoint_test', type=int, default=500)
 opt = parser.parse_args()
 
 
