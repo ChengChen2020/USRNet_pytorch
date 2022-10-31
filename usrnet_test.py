@@ -40,23 +40,19 @@ def main(model_name, testset_name):
 
             # util.surf(kernel)  # Visualize kernel in 3D
 
-            idx = 0
-
             for img in L_paths:
 
                 np.random.seed(0)
 
                 # (1) Degradation
-                idx += 1
-                img_name, ext = os.path.splitext(os.path.basename(img))
+                img_name, _ = os.path.splitext(os.path.basename(img))
 
-                img_H = util.imread_uint(img, n_channels=3)  # HR image, int8
+                img_H = util.imread_uint(img, n_channels=3)
                 img_H = util.modcrop(img_H, np.lcm(sf, 8))
 
                 img_L = convolve(img_H, kernel[..., np.newaxis], mode='wrap')  # Blur
-                img_L = img_L[0::sf, 0::sf, ...]
-                img_L = util.uint2single(img_L)
-                img_L += np.random.normal(0, noise_level, img_L.shape)
+                img_L = img_L[0::sf, 0::sf, ...]  # Downsample
+                img_L = util.uint2single(img_L) + np.random.normal(0, noise_level, img_L.shape)  # AWGN
 
                 x = util.single2tensor4(img_L)
                 k = util.single2tensor4(kernel[..., np.newaxis])
@@ -78,7 +74,7 @@ def main(model_name, testset_name):
                     k_v = util.single2uint(np.tile(k_v[..., np.newaxis], [1, 1, 3]))
                     k_v = cv2.resize(k_v, (3 * k_v.shape[1], 3 * k_v.shape[0]), interpolation=cv2.INTER_NEAREST)
                     img_I = cv2.resize(img_L, (sf * img_L.shape[1], sf * img_L.shape[0]), interpolation=cv2.INTER_NEAREST)
-                    img_I[:k_v.shape[0], -k_v.shape[1]:, :] = k_v
+                    img_I[:k_v.shape[0], -k_v.shape[1]:, :] = k_v  # Kernel at top right corner
                     img_I[:img_L.shape[0], :img_L.shape[1], :] = img_L
                     util.imsave(np.concatenate([img_I, img_E, img_H], axis=1),
                                 os.path.join(E_path, img_name + '_x' + str(sf) + '_k' + str(k_index + 1) + '_LEH.png'))

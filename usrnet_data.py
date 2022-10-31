@@ -25,12 +25,12 @@ class DatasetUSRNet(data.Dataset):
         super(DatasetUSRNet, self).__init__()
         self.phase = phase
         self.n_channels = 3
+        self.sigma_max = 25  # Max noise level
+        self.scales = [1, 2, 3, 4]
+        self.sf_validation = 3  # Validation scale factor
         self.batch_size = batch_size
         self.patch_size = patch_size
-        self.sigma_max = 25
-        self.scales = [1, 2, 3, 4]
-        self.sf_validation = 3  # validation scale factor
-        self.kernels = loadmat(os.path.join('kernels', 'kernels_12.mat'))['kernels']  # for validation
+        self.kernels = loadmat(os.path.join('kernels', 'kernels_12.mat'))['kernels']  # For validation
 
         self.paths_H = util.get_image_paths(path)
         self.count = 0
@@ -73,9 +73,9 @@ class DatasetUSRNet(data.Dataset):
             noise_level = np.random.randint(0, self.sigma_max) / 255.0
 
             # (5) Degradation
-            img_L = convolve(patch_H, np.expand_dims(k, axis=2), mode='wrap')
-            img_L = img_L[0::self.sf, 0::self.sf, ...]
-            img_L = util.uint2single(img_L) + np.random.normal(0, noise_level, img_L.shape)
+            img_L = convolve(patch_H, np.expand_dims(k, axis=2), mode='wrap')  # Blur
+            img_L = img_L[0::self.sf, 0::self.sf, ...]  # Downsample
+            img_L = util.uint2single(img_L) + np.random.normal(0, noise_level, img_L.shape)  # AWGN
             img_H = patch_H
 
         else:
@@ -87,9 +87,9 @@ class DatasetUSRNet(data.Dataset):
             img_H = util.modcrop(img_H, self.sf_validation)
 
             # Degradation
-            img_L = convolve(img_H, np.expand_dims(k, axis=2), mode='wrap')
-            img_L = img_L[0::self.sf_validation, 0::self.sf_validation, ...]
-            img_L = util.uint2single(img_L) + np.random.normal(0, noise_level, img_L.shape)
+            img_L = convolve(img_H, np.expand_dims(k, axis=2), mode='wrap')  # Blur
+            img_L = img_L[0::self.sf_validation, 0::self.sf_validation, ...]  # Downsample
+            img_L = util.uint2single(img_L) + np.random.normal(0, noise_level, img_L.shape)  # AWGN
             self.sf = self.sf_validation
 
         k = util.single2tensor3(np.expand_dims(np.float32(k), axis=2))

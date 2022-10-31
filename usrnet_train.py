@@ -16,8 +16,6 @@ import utils_image as util
 from usrnet_model import USRNet
 from usrnet_data import DatasetUSRNet
 
-CUDA_VISIBLE_DEVICES = 3
-
 
 def get_bare_model(network):
     """Get bare model, especially under wrapping with
@@ -54,11 +52,11 @@ def main():
 
     util.mkdir('model_zoo')
 
-    torch.cuda.set_device(1)
+    print('Available devices:', torch.cuda.device_count())
     print('Current device:', torch.cuda.current_device())
     device = torch.device('cuda')
 
-    device_ids = [1, 2]
+    device_ids = [0, 1]
     model = nn.DataParallel(USRNet(), device_ids=device_ids)
     model = model.to(device)
     model.apply(init_weights)
@@ -86,6 +84,11 @@ def main():
     print("Valid Loader size:", len(valid_loader))
     print("Data Loader successful!")
 
+    path_task = os.path.join('train_log', time.strftime("%Y%m%d-%H%M%S"))
+    path_model = os.path.join(path_task, 'models')
+    path_image = os.path.join(path_task, 'images')
+    util.mkdirs([path_task, path_model, path_image])
+
     for epoch in range(1, 1001):
 
         for i, train_data in enumerate(train_loader):
@@ -110,49 +113,43 @@ def main():
             message += '{:s}: {:.3e} '.format('loss', loss.item())
             print(message)
 
-            if epoch % opt.checkpoint == 0:
-                path_task = os.path.join('train_log', time.strftime("%Y%m%d-%H%M%S"))
-                path_model = os.path.join(path_task, 'models')
-                path_image = os.path.join(path_task, 'images')
+        if epoch % opt.checkpoint == 0:
+            # Save checkpoint model
+            save_network(path_model, model, 'USRNet', epoch)
 
-                utils.mkdirs([path_task, path_model, path_image])
+            # Validation
+            model.eval()
+            avg_psnr = 0.0
 
-                save_network(path_model, model, 'USRNet', current_step)
+            for valid_data in valid_loader:
+                image_name_ext = os.path.basename(valid_data['path'][0])
+                img_name, _ = os.path.splitext(image_name_ext)
 
-                model.eval()
-                avg_psnr = 0.0
-                idx = 0
+                img_dir = os.path.join(path_image, img_name)
+                util.mkdir(img_dir)
 
-                for valid_data in valid_loader:
-                    idx += 1
-                    image_name_ext = os.path.basename(valid_data['path'][0])
-                    img_name, _ = os.path.splitext(image_name_ext)
+                L = valid_data['L'].to(device)
+                H = valid_data['H'].to(device)
+                k = valid_data['k'].to(device)
+                sf = int(valid_data['sf'][0, ...].squeeze().cpu().numpy())
+                sigma = valid_data['sigma'].to(device)
 
-                    img_dir = os.path.join(path_image, img_name)
-                    util.mkdir(img_dir)
+                with torch.no_grad():
+                    E = model(L, k, sf, sigma)
 
-                    L = valid_data['L'].to(device)
-                    H = valid_data['H'].to(device)
-                    k = valid_data['k'].to(device)
-                    sf = int(valid_data['sf'][0, ...].squeeze().cpu().numpy())
-                    sigma = valid_data['sigma'].to(device)
+                E_img = util.tensor2uint(E.detach()[0].float().cpu())
+                H_img = util.tensor2uint(H.detach()[0].float().cpu())
 
-                    with torch.no_grad():
-                        E = model(L, k, sf, sigma)
+                # Save estimated image E
+                save_img_path = os.path.join(img_dir, '{:s}_{:d}.png'.format(img_name, epoch))
+                util.imsave(E_img, save_img_path)
 
-                    E_img = util.tensor2uint(E.detach()[0].float().cpu())
-                    H_img = util.tensor2uint(H.detach()[0].float().cpu())
+                # PSNR
+                current_psnr = util.calculate_psnr(E_img, H_img, border=sf ** 2)
+                avg_psnr += current_psnr
 
-                    # Save estimated image E
-                    save_img_path = os.path.join(img_dir, '{:s}_{:d}.png'.format(img_name, current_step))
-                    util.imsave(E_img, save_img_path)
-
-                    # PSNR
-                    current_psnr = util.calculate_psnr(E_img, H_img, border=sf ** 2)
-                    avg_psnr += current_psnr
-
-                avg_psnr = avg_psnr / idx
-                print('<epoch:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, avg_psnr))
+            avg_psnr = avg_psnr / len(valid_loader.dataset)
+            print('<epoch:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, avg_psnr))
 
     print('Saving the final model.')
     save_network('model_zoo', model, 'USRNet', 'latest')
@@ -160,7 +157,7 @@ def main():
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--batch_size', type=int, default=48)
 parser.add_argument('--patch_size', type=int, default=96)
 parser.add_argument('--train_path', type=str, default='trainsets/train_combined')
 parser.add_argument('--valid_path', type=str, default='testsets/Set5')
