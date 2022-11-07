@@ -56,9 +56,9 @@ def main():
     print('Current device:', torch.cuda.current_device())
     device = torch.device('cuda')
 
-    device_ids = [0, 1]
-    model = nn.DataParallel(USRNet(), device_ids=device_ids)
-    model = model.to(device)
+    # device_ids = [0, 1]
+    # model = nn.DataParallel(USRNet(), device_ids=device_ids)
+    model = USRNet().to(device)
     model.apply(init_weights)
 
     optimizer = Adam(model.parameters(), lr=1e-4, betas=[0.9, 0.999])
@@ -91,6 +91,8 @@ def main():
 
     for epoch in range(1, 1001):
 
+        ep_loss = 0.0
+
         for i, train_data in enumerate(train_loader):
 
             model.train()
@@ -106,12 +108,14 @@ def main():
             loss = criterion(out, H)
             loss.backward()
 
+            ep_loss += loss.item()
+
             optimizer.step()
             scheduler.step()
 
-            message = '<epoch:{:3d}, lr:{:.3e}> '.format(epoch, scheduler.get_last_lr()[0])
-            message += '{:s}: {:.3e} '.format('loss', loss.item())
-            print(message)
+        message = '<epoch:{:3d}, lr:{:.3e}> '.format(epoch, scheduler.get_last_lr()[0])
+        message += '{:s}: {:.3e} '.format('loss', ep_loss / len(train_loader))
+        print(message)
 
         if epoch % opt.checkpoint == 0:
             # Save checkpoint model

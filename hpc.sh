@@ -3,7 +3,7 @@
 #SBATCH --job-name=usrnet
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem=50GB
 #SBATCH --gres=gpu:rtx8000:1
 #

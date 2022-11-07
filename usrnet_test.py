@@ -25,13 +25,12 @@ def main(model_name, testset_name):
 
     L_path = os.path.join('testsets', testset_name)  # L_path and H_path
     E_path = os.path.join('test_log', result_name)
-    util.mkdir(E_path)
+    if opt.save_LEH:
+        util.mkdir(E_path)
 
     L_paths = util.get_image_paths(L_path)
 
-    noise_level = 0
-
-    for sf in [2, 3, 4]:
+    for (noise_level, sf) in [(0.0, 2), (0.0, 3), (0.01, 3), (0.03, 3), (0.0, 4)]:
 
         for k_index in range(kernels.shape[1]):
             test_results = OrderedDict()

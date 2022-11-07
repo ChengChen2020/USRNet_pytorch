@@ -1,4 +1,4 @@
-out.txt
+*.out
 *.tar
 *.zip
 .DS_Store
@@ -8,7 +8,6 @@ trainsets/
 train_log/
 test_log/
 model_zoo/
-results/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

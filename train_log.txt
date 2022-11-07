@@ -1,0 +1,678 @@
+Available devices: 1
+Current device: 0
+Train Dataset size: 3550
+Train Loader size: 73
+Valid Dataset size: 5
+Valid Loader size: 5
+Data Loader successful!
+/scratch/cc6858/ece57000/penv/lib/python3.8/site-packages/torch/utils/data/dataloader.py:563: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+<epoch:  1, lr:1.000e-04> loss: 3.731e-01 
+<epoch:  2, lr:1.000e-04> loss: 2.458e-01 
+<epoch:  3, lr:1.000e-04> loss: 2.420e-01 
+<epoch:  4, lr:1.000e-04> loss: 2.205e-01 
+<epoch:  5, lr:1.000e-04> loss: 2.360e-01 
+<epoch:  6, lr:1.000e-04> loss: 2.110e-01 
+<epoch:  7, lr:1.000e-04> loss: 1.951e-01 
+<epoch:  8, lr:1.000e-04> loss: 1.738e-01 
+<epoch:  9, lr:1.000e-04> loss: 1.104e-01 
+<epoch: 10, lr:1.000e-04> loss: 9.674e-02 
+<epoch: 10, Average PSNR : 18.33dB
+
+<epoch: 11, lr:1.000e-04> loss: 9.218e-02 
+<epoch: 12, lr:1.000e-04> loss: 8.752e-02 
+<epoch: 13, lr:1.000e-04> loss: 8.494e-02 
+<epoch: 14, lr:1.000e-04> loss: 8.176e-02 
+<epoch: 15, lr:1.000e-04> loss: 7.890e-02 
+<epoch: 16, lr:1.000e-04> loss: 7.656e-02 
+<epoch: 17, lr:1.000e-04> loss: 6.690e-02 
+<epoch: 18, lr:1.000e-04> loss: 5.814e-02 
+<epoch: 19, lr:1.000e-04> loss: 5.632e-02 
+<epoch: 20, lr:1.000e-04> loss: 5.675e-02 
+<epoch: 20, Average PSNR : 22.63dB
+
+<epoch: 21, lr:1.000e-04> loss: 5.517e-02 
+<epoch: 22, lr:1.000e-04> loss: 5.368e-02 
+<epoch: 23, lr:1.000e-04> loss: 5.435e-02 
+<epoch: 24, lr:1.000e-04> loss: 5.303e-02 
+<epoch: 25, lr:1.000e-04> loss: 5.225e-02 
+<epoch: 26, lr:1.000e-04> loss: 5.099e-02 
+<epoch: 27, lr:1.000e-04> loss: 5.135e-02 
+<epoch: 28, lr:1.000e-04> loss: 5.161e-02 
+<epoch: 29, lr:1.000e-04> loss: 5.142e-02 
+<epoch: 30, lr:1.000e-04> loss: 5.150e-02 
+<epoch: 30, Average PSNR : 23.19dB
+
+<epoch: 31, lr:1.000e-04> loss: 5.015e-02 
+<epoch: 32, lr:1.000e-04> loss: 4.873e-02 
+<epoch: 33, lr:1.000e-04> loss: 5.058e-02 
+<epoch: 34, lr:1.000e-04> loss: 4.906e-02 
+<epoch: 35, lr:1.000e-04> loss: 4.892e-02 
+<epoch: 36, lr:1.000e-04> loss: 4.831e-02 
+<epoch: 37, lr:1.000e-04> loss: 4.835e-02 
+<epoch: 38, lr:1.000e-04> loss: 4.768e-02 
+<epoch: 39, lr:1.000e-04> loss: 4.695e-02 
+<epoch: 40, lr:1.000e-04> loss: 4.662e-02 
+<epoch: 40, Average PSNR : 24.87dB
+
+<epoch: 41, lr:1.000e-04> loss: 4.627e-02 
+<epoch: 42, lr:1.000e-04> loss: 4.642e-02 
+<epoch: 43, lr:1.000e-04> loss: 4.520e-02 
+<epoch: 44, lr:1.000e-04> loss: 4.552e-02 
+<epoch: 45, lr:1.000e-04> loss: 4.544e-02 
+<epoch: 46, lr:1.000e-04> loss: 4.522e-02 
+<epoch: 47, lr:1.000e-04> loss: 4.550e-02 
+<epoch: 48, lr:1.000e-04> loss: 4.479e-02 
+<epoch: 49, lr:1.000e-04> loss: 4.597e-02 
+<epoch: 50, lr:1.000e-04> loss: 4.453e-02 
+<epoch: 50, Average PSNR : 26.20dB
+
+<epoch: 51, lr:1.000e-04> loss: 4.543e-02 
+<epoch: 52, lr:1.000e-04> loss: 4.375e-02 
+<epoch: 53, lr:1.000e-04> loss: 4.513e-02 
+<epoch: 54, lr:1.000e-04> loss: 4.443e-02 
+<epoch: 55, lr:1.000e-04> loss: 4.479e-02 
+<epoch: 56, lr:1.000e-04> loss: 4.532e-02 
+<epoch: 57, lr:1.000e-04> loss: 4.424e-02 
+<epoch: 58, lr:1.000e-04> loss: 4.484e-02 
+<epoch: 59, lr:1.000e-04> loss: 4.345e-02 
+<epoch: 60, lr:1.000e-04> loss: 4.378e-02 
+<epoch: 60, Average PSNR : 26.24dB
+
+<epoch: 61, lr:1.000e-04> loss: 4.363e-02 
+<epoch: 62, lr:1.000e-04> loss: 4.451e-02 
+<epoch: 63, lr:1.000e-04> loss: 4.237e-02 
+<epoch: 64, lr:1.000e-04> loss: 4.390e-02 
+<epoch: 65, lr:1.000e-04> loss: 4.348e-02 
+<epoch: 66, lr:1.000e-04> loss: 4.259e-02 
+<epoch: 67, lr:1.000e-04> loss: 4.284e-02 
+<epoch: 68, lr:1.000e-04> loss: 4.411e-02 
+<epoch: 69, lr:1.000e-04> loss: 4.263e-02 
+<epoch: 70, lr:1.000e-04> loss: 4.151e-02 
+<epoch: 70, Average PSNR : 26.75dB
+
+<epoch: 71, lr:1.000e-04> loss: 4.185e-02 
+<epoch: 72, lr:1.000e-04> loss: 4.250e-02 
+<epoch: 73, lr:1.000e-04> loss: 4.231e-02 
+<epoch: 74, lr:1.000e-04> loss: 4.285e-02 
+<epoch: 75, lr:1.000e-04> loss: 4.220e-02 
+<epoch: 76, lr:1.000e-04> loss: 4.172e-02 
+<epoch: 77, lr:1.000e-04> loss: 4.181e-02 
+<epoch: 78, lr:1.000e-04> loss: 4.212e-02 
+<epoch: 79, lr:1.000e-04> loss: 4.234e-02 
+<epoch: 80, lr:1.000e-04> loss: 4.206e-02 
+<epoch: 80, Average PSNR : 27.06dB
+
+<epoch: 81, lr:1.000e-04> loss: 4.253e-02 
+<epoch: 82, lr:1.000e-04> loss: 4.319e-02 
+<epoch: 83, lr:1.000e-04> loss: 4.099e-02 
+<epoch: 84, lr:1.000e-04> loss: 4.127e-02 
+<epoch: 85, lr:1.000e-04> loss: 4.182e-02 
+<epoch: 86, lr:1.000e-04> loss: 4.148e-02 
+<epoch: 87, lr:1.000e-04> loss: 4.170e-02 
+<epoch: 88, lr:1.000e-04> loss: 4.157e-02 
+<epoch: 89, lr:1.000e-04> loss: 4.176e-02 
+<epoch: 90, lr:1.000e-04> loss: 4.094e-02 
+<epoch: 90, Average PSNR : 26.91dB
+
+<epoch: 91, lr:1.000e-04> loss: 4.117e-02 
+<epoch: 92, lr:1.000e-04> loss: 4.031e-02 
+<epoch: 93, lr:1.000e-04> loss: 4.031e-02 
+<epoch: 94, lr:1.000e-04> loss: 4.168e-02 
+<epoch: 95, lr:1.000e-04> loss: 4.088e-02 
+<epoch: 96, lr:1.000e-04> loss: 4.023e-02 
+<epoch: 97, lr:1.000e-04> loss: 4.010e-02 
+<epoch: 98, lr:1.000e-04> loss: 4.186e-02 
+<epoch: 99, lr:1.000e-04> loss: 4.083e-02 
+<epoch:100, lr:1.000e-04> loss: 4.057e-02 
+<epoch:100, Average PSNR : 27.21dB
+
+<epoch:101, lr:1.000e-04> loss: 3.999e-02 
+<epoch:102, lr:1.000e-04> loss: 3.966e-02 
+<epoch:103, lr:1.000e-04> loss: 3.964e-02 
+<epoch:104, lr:1.000e-04> loss: 4.059e-02 
+<epoch:105, lr:1.000e-04> loss: 3.999e-02 
+<epoch:106, lr:1.000e-04> loss: 3.988e-02 
+<epoch:107, lr:1.000e-04> loss: 4.011e-02 
+<epoch:108, lr:1.000e-04> loss: 3.977e-02 
+<epoch:109, lr:1.000e-04> loss: 3.934e-02 
+<epoch:110, lr:1.000e-04> loss: 3.948e-02 
+<epoch:110, Average PSNR : 27.27dB
+
+<epoch:111, lr:1.000e-04> loss: 3.858e-02 
+<epoch:112, lr:1.000e-04> loss: 4.044e-02 
+<epoch:113, lr:1.000e-04> loss: 3.987e-02 
+<epoch:114, lr:1.000e-04> loss: 3.993e-02 
+<epoch:115, lr:1.000e-04> loss: 4.012e-02 
+<epoch:116, lr:1.000e-04> loss: 3.946e-02 
+<epoch:117, lr:1.000e-04> loss: 3.957e-02 
+<epoch:118, lr:1.000e-04> loss: 4.042e-02 
+<epoch:119, lr:1.000e-04> loss: 3.971e-02 
+<epoch:120, lr:1.000e-04> loss: 3.877e-02 
+<epoch:120, Average PSNR : 27.39dB
+
+<epoch:121, lr:1.000e-04> loss: 3.773e-02 
+<epoch:122, lr:1.000e-04> loss: 3.911e-02 
+<epoch:123, lr:1.000e-04> loss: 3.826e-02 
+<epoch:124, lr:1.000e-04> loss: 3.746e-02 
+<epoch:125, lr:1.000e-04> loss: 3.783e-02 
+<epoch:126, lr:1.000e-04> loss: 3.850e-02 
+<epoch:127, lr:1.000e-04> loss: 3.836e-02 
+<epoch:128, lr:1.000e-04> loss: 3.844e-02 
+<epoch:129, lr:1.000e-04> loss: 3.716e-02 
+<epoch:130, lr:1.000e-04> loss: 3.816e-02 
+<epoch:130, Average PSNR : 27.87dB
+
+<epoch:131, lr:1.000e-04> loss: 3.683e-02 
+<epoch:132, lr:1.000e-04> loss: 3.872e-02 
+<epoch:133, lr:1.000e-04> loss: 3.790e-02 
+<epoch:134, lr:1.000e-04> loss: 3.820e-02 
+<epoch:135, lr:1.000e-04> loss: 3.754e-02 
+<epoch:136, lr:1.000e-04> loss: 3.850e-02 
+<epoch:137, lr:1.000e-04> loss: 3.838e-02 
+<epoch:138, lr:1.000e-04> loss: 3.772e-02 
+<epoch:139, lr:1.000e-04> loss: 3.758e-02 
+<epoch:140, lr:1.000e-04> loss: 3.553e-02 
+<epoch:140, Average PSNR : 28.43dB
+
+<epoch:141, lr:1.000e-04> loss: 3.686e-02 
+<epoch:142, lr:1.000e-04> loss: 3.635e-02 
+<epoch:143, lr:1.000e-04> loss: 3.695e-02 
+<epoch:144, lr:1.000e-04> loss: 3.711e-02 
+<epoch:145, lr:1.000e-04> loss: 3.634e-02 
+<epoch:146, lr:1.000e-04> loss: 3.587e-02 
+<epoch:147, lr:1.000e-04> loss: 3.619e-02 
+<epoch:148, lr:1.000e-04> loss: 3.573e-02 
+<epoch:149, lr:1.000e-04> loss: 3.600e-02 
+<epoch:150, lr:1.000e-04> loss: 3.588e-02 
+<epoch:150, Average PSNR : 28.44dB
+
+<epoch:151, lr:1.000e-04> loss: 3.614e-02 
+<epoch:152, lr:1.000e-04> loss: 3.643e-02 
+<epoch:153, lr:1.000e-04> loss: 3.612e-02 
+<epoch:154, lr:1.000e-04> loss: 3.576e-02 
+<epoch:155, lr:1.000e-04> loss: 3.491e-02 
+<epoch:156, lr:1.000e-04> loss: 3.527e-02 
+<epoch:157, lr:1.000e-04> loss: 3.580e-02 
+<epoch:158, lr:1.000e-04> loss: 3.598e-02 
+<epoch:159, lr:1.000e-04> loss: 3.625e-02 
+<epoch:160, lr:1.000e-04> loss: 3.616e-02 
+<epoch:160, Average PSNR : 28.75dB
+
+<epoch:161, lr:1.000e-04> loss: 3.563e-02 
+<epoch:162, lr:1.000e-04> loss: 3.552e-02 
+<epoch:163, lr:1.000e-04> loss: 3.495e-02 
+<epoch:164, lr:1.000e-04> loss: 3.593e-02 
+<epoch:165, lr:1.000e-04> loss: 3.577e-02 
+<epoch:166, lr:1.000e-04> loss: 3.602e-02 
+<epoch:167, lr:1.000e-04> loss: 3.450e-02 
+<epoch:168, lr:1.000e-04> loss: 3.595e-02 
+<epoch:169, lr:1.000e-04> loss: 3.443e-02 
+<epoch:170, lr:1.000e-04> loss: 3.543e-02 
+<epoch:170, Average PSNR : 28.77dB
+
+<epoch:171, lr:1.000e-04> loss: 3.577e-02 
+<epoch:172, lr:1.000e-04> loss: 3.559e-02 
+<epoch:173, lr:1.000e-04> loss: 3.555e-02 
+<epoch:174, lr:1.000e-04> loss: 3.510e-02 
+<epoch:175, lr:1.000e-04> loss: 3.414e-02 
+<epoch:176, lr:1.000e-04> loss: 3.486e-02 
+<epoch:177, lr:1.000e-04> loss: 3.424e-02 
+<epoch:178, lr:1.000e-04> loss: 3.463e-02 
+<epoch:179, lr:1.000e-04> loss: 3.437e-02 
+<epoch:180, lr:1.000e-04> loss: 3.485e-02 
+<epoch:180, Average PSNR : 29.31dB
+
+<epoch:181, lr:1.000e-04> loss: 3.456e-02 
+<epoch:182, lr:1.000e-04> loss: 3.444e-02 
+<epoch:183, lr:1.000e-04> loss: 3.481e-02 
+<epoch:184, lr:1.000e-04> loss: 3.486e-02 
+<epoch:185, lr:1.000e-04> loss: 3.430e-02 
+<epoch:186, lr:1.000e-04> loss: 3.593e-02 
+<epoch:187, lr:1.000e-04> loss: 3.450e-02 
+<epoch:188, lr:1.000e-04> loss: 3.404e-02 
+<epoch:189, lr:1.000e-04> loss: 3.425e-02 
+<epoch:190, lr:1.000e-04> loss: 3.470e-02 
+<epoch:190, Average PSNR : 29.38dB
+
+<epoch:191, lr:1.000e-04> loss: 3.519e-02 
+<epoch:192, lr:1.000e-04> loss: 3.421e-02 
+<epoch:193, lr:1.000e-04> loss: 3.387e-02 
+<epoch:194, lr:1.000e-04> loss: 3.395e-02 
+<epoch:195, lr:1.000e-04> loss: 3.526e-02 
+<epoch:196, lr:1.000e-04> loss: 3.500e-02 
+<epoch:197, lr:1.000e-04> loss: 3.423e-02 
+<epoch:198, lr:1.000e-04> loss: 3.391e-02 
+<epoch:199, lr:1.000e-04> loss: 3.448e-02 
+<epoch:200, lr:1.000e-04> loss: 3.336e-02 
+<epoch:200, Average PSNR : 29.49dB
+
+<epoch:201, lr:1.000e-04> loss: 3.420e-02 
+<epoch:202, lr:1.000e-04> loss: 3.374e-02 
+<epoch:203, lr:1.000e-04> loss: 3.426e-02 
+<epoch:204, lr:1.000e-04> loss: 3.342e-02 
+<epoch:205, lr:1.000e-04> loss: 3.404e-02 
+<epoch:206, lr:1.000e-04> loss: 3.395e-02 
+<epoch:207, lr:1.000e-04> loss: 3.468e-02 
+<epoch:208, lr:1.000e-04> loss: 3.399e-02 
+<epoch:209, lr:1.000e-04> loss: 3.349e-02 
+<epoch:210, lr:1.000e-04> loss: 3.480e-02 
+<epoch:210, Average PSNR : 29.58dB
+
+<epoch:211, lr:1.000e-04> loss: 3.390e-02 
+<epoch:212, lr:1.000e-04> loss: 3.467e-02 
+<epoch:213, lr:1.000e-04> loss: 3.411e-02 
+<epoch:214, lr:1.000e-04> loss: 3.342e-02 
+<epoch:215, lr:1.000e-04> loss: 3.457e-02 
+<epoch:216, lr:1.000e-04> loss: 3.383e-02 
+<epoch:217, lr:1.000e-04> loss: 3.386e-02 
+<epoch:218, lr:1.000e-04> loss: 3.339e-02 
+<epoch:219, lr:1.000e-04> loss: 3.382e-02 
+<epoch:220, lr:1.000e-04> loss: 3.442e-02 
+<epoch:220, Average PSNR : 29.80dB
+
+<epoch:221, lr:1.000e-04> loss: 3.432e-02 
+<epoch:222, lr:1.000e-04> loss: 3.406e-02 
+<epoch:223, lr:1.000e-04> loss: 3.396e-02 
+<epoch:224, lr:1.000e-04> loss: 3.366e-02 
+<epoch:225, lr:1.000e-04> loss: 3.426e-02 
+<epoch:226, lr:1.000e-04> loss: 3.432e-02 
+<epoch:227, lr:1.000e-04> loss: 3.272e-02 
+<epoch:228, lr:1.000e-04> loss: 3.400e-02 
+<epoch:229, lr:1.000e-04> loss: 3.514e-02 
+<epoch:230, lr:1.000e-04> loss: 3.386e-02 
+<epoch:230, Average PSNR : 29.84dB
+
+<epoch:231, lr:1.000e-04> loss: 3.307e-02 
+<epoch:232, lr:1.000e-04> loss: 3.441e-02 
+<epoch:233, lr:1.000e-04> loss: 3.376e-02 
+<epoch:234, lr:1.000e-04> loss: 3.319e-02 
+<epoch:235, lr:1.000e-04> loss: 3.396e-02 
+<epoch:236, lr:1.000e-04> loss: 3.412e-02 
+<epoch:237, lr:1.000e-04> loss: 3.319e-02 
+<epoch:238, lr:1.000e-04> loss: 3.392e-02 
+<epoch:239, lr:1.000e-04> loss: 3.330e-02 
+<epoch:240, lr:1.000e-04> loss: 3.293e-02 
+<epoch:240, Average PSNR : 29.93dB
+
+<epoch:241, lr:1.000e-04> loss: 3.212e-02 
+<epoch:242, lr:1.000e-04> loss: 3.441e-02 
+<epoch:243, lr:1.000e-04> loss: 3.369e-02 
+<epoch:244, lr:1.000e-04> loss: 3.370e-02 
+<epoch:245, lr:1.000e-04> loss: 3.272e-02 
+<epoch:246, lr:1.000e-04> loss: 3.331e-02 
+<epoch:247, lr:1.000e-04> loss: 3.336e-02 
+<epoch:248, lr:1.000e-04> loss: 3.336e-02 
+<epoch:249, lr:1.000e-04> loss: 3.348e-02 
+<epoch:250, lr:1.000e-04> loss: 3.422e-02 
+<epoch:250, Average PSNR : 30.01dB
+
+<epoch:251, lr:1.000e-04> loss: 3.366e-02 
+<epoch:252, lr:1.000e-04> loss: 3.317e-02 
+<epoch:253, lr:1.000e-04> loss: 3.361e-02 
+<epoch:254, lr:1.000e-04> loss: 3.307e-02 
+<epoch:255, lr:1.000e-04> loss: 3.492e-02 
+<epoch:256, lr:1.000e-04> loss: 3.344e-02 
+<epoch:257, lr:1.000e-04> loss: 3.362e-02 
+<epoch:258, lr:1.000e-04> loss: 3.438e-02 
+<epoch:259, lr:1.000e-04> loss: 3.407e-02 
+<epoch:260, lr:1.000e-04> loss: 3.465e-02 
+<epoch:260, Average PSNR : 30.05dB
+
+<epoch:261, lr:1.000e-04> loss: 3.313e-02 
+<epoch:262, lr:1.000e-04> loss: 3.263e-02 
+<epoch:263, lr:1.000e-04> loss: 3.379e-02 
+<epoch:264, lr:1.000e-04> loss: 3.313e-02 
+<epoch:265, lr:1.000e-04> loss: 3.292e-02 
+<epoch:266, lr:1.000e-04> loss: 3.387e-02 
+<epoch:267, lr:1.000e-04> loss: 3.275e-02 
+<epoch:268, lr:1.000e-04> loss: 3.304e-02 
+<epoch:269, lr:1.000e-04> loss: 3.364e-02 
+<epoch:270, lr:1.000e-04> loss: 3.312e-02 
+<epoch:270, Average PSNR : 30.12dB
+
+<epoch:271, lr:1.000e-04> loss: 3.332e-02 
+<epoch:272, lr:1.000e-04> loss: 3.416e-02 
+<epoch:273, lr:1.000e-04> loss: 3.303e-02 
+<epoch:274, lr:1.000e-04> loss: 3.351e-02 
+<epoch:275, lr:1.000e-04> loss: 3.458e-02 
+<epoch:276, lr:1.000e-04> loss: 3.317e-02 
+<epoch:277, lr:1.000e-04> loss: 3.307e-02 
+<epoch:278, lr:1.000e-04> loss: 3.390e-02 
+<epoch:279, lr:1.000e-04> loss: 3.317e-02 
+<epoch:280, lr:1.000e-04> loss: 3.289e-02 
+<epoch:280, Average PSNR : 30.12dB
+
+<epoch:281, lr:1.000e-04> loss: 3.308e-02 
+<epoch:282, lr:1.000e-04> loss: 3.295e-02 
+<epoch:283, lr:1.000e-04> loss: 3.291e-02 
+<epoch:284, lr:1.000e-04> loss: 3.282e-02 
+<epoch:285, lr:1.000e-04> loss: 3.293e-02 
+<epoch:286, lr:1.000e-04> loss: 3.484e-02 
+<epoch:287, lr:1.000e-04> loss: 3.236e-02 
+<epoch:288, lr:1.000e-04> loss: 3.282e-02 
+<epoch:289, lr:1.000e-04> loss: 3.279e-02 
+<epoch:290, lr:1.000e-04> loss: 3.256e-02 
+<epoch:290, Average PSNR : 30.19dB
+
+<epoch:291, lr:1.000e-04> loss: 3.276e-02 
+<epoch:292, lr:1.000e-04> loss: 3.239e-02 
+<epoch:293, lr:1.000e-04> loss: 3.354e-02 
+<epoch:294, lr:1.000e-04> loss: 3.332e-02 
+<epoch:295, lr:1.000e-04> loss: 3.367e-02 
+<epoch:296, lr:1.000e-04> loss: 3.368e-02 
+<epoch:297, lr:1.000e-04> loss: 3.301e-02 
+<epoch:298, lr:1.000e-04> loss: 3.340e-02 
+<epoch:299, lr:1.000e-04> loss: 3.289e-02 
+<epoch:300, lr:1.000e-04> loss: 3.373e-02 
+<epoch:300, Average PSNR : 30.27dB
+
+<epoch:301, lr:1.000e-04> loss: 3.321e-02 
+<epoch:302, lr:1.000e-04> loss: 3.237e-02 
+<epoch:303, lr:1.000e-04> loss: 3.314e-02 
+<epoch:304, lr:1.000e-04> loss: 3.312e-02 
+<epoch:305, lr:1.000e-04> loss: 3.238e-02 
+<epoch:306, lr:1.000e-04> loss: 3.297e-02 
+<epoch:307, lr:1.000e-04> loss: 3.357e-02 
+<epoch:308, lr:1.000e-04> loss: 3.326e-02 
+<epoch:309, lr:1.000e-04> loss: 3.397e-02 
+<epoch:310, lr:1.000e-04> loss: 3.239e-02 
+<epoch:310, Average PSNR : 30.26dB
+
+<epoch:311, lr:1.000e-04> loss: 3.316e-02 
+<epoch:312, lr:1.000e-04> loss: 3.369e-02 
+<epoch:313, lr:1.000e-04> loss: 3.362e-02 
+<epoch:314, lr:1.000e-04> loss: 3.173e-02 
+<epoch:315, lr:1.000e-04> loss: 3.281e-02 
+<epoch:316, lr:1.000e-04> loss: 3.404e-02 
+<epoch:317, lr:1.000e-04> loss: 3.266e-02 
+<epoch:318, lr:1.000e-04> loss: 3.349e-02 
+<epoch:319, lr:1.000e-04> loss: 3.359e-02 
+<epoch:320, lr:1.000e-04> loss: 3.293e-02 
+<epoch:320, Average PSNR : 30.21dB
+
+<epoch:321, lr:1.000e-04> loss: 3.382e-02 
+<epoch:322, lr:1.000e-04> loss: 3.356e-02 
+<epoch:323, lr:1.000e-04> loss: 3.223e-02 
+<epoch:324, lr:1.000e-04> loss: 3.312e-02 
+<epoch:325, lr:1.000e-04> loss: 3.413e-02 
+<epoch:326, lr:1.000e-04> loss: 3.369e-02 
+<epoch:327, lr:1.000e-04> loss: 3.257e-02 
+<epoch:328, lr:1.000e-04> loss: 3.367e-02 
+<epoch:329, lr:1.000e-04> loss: 3.284e-02 
+<epoch:330, lr:1.000e-04> loss: 3.197e-02 
+<epoch:330, Average PSNR : 30.29dB
+
+<epoch:331, lr:1.000e-04> loss: 3.364e-02 
+<epoch:332, lr:1.000e-04> loss: 3.408e-02 
+<epoch:333, lr:1.000e-04> loss: 3.432e-02 
+<epoch:334, lr:1.000e-04> loss: 3.352e-02 
+<epoch:335, lr:1.000e-04> loss: 3.374e-02 
+<epoch:336, lr:1.000e-04> loss: 3.329e-02 
+<epoch:337, lr:1.000e-04> loss: 3.295e-02 
+<epoch:338, lr:1.000e-04> loss: 3.246e-02 
+<epoch:339, lr:1.000e-04> loss: 3.216e-02 
+<epoch:340, lr:1.000e-04> loss: 3.308e-02 
+<epoch:340, Average PSNR : 30.32dB
+
+<epoch:341, lr:1.000e-04> loss: 3.175e-02 
+<epoch:342, lr:1.000e-04> loss: 3.312e-02 
+<epoch:343, lr:1.000e-04> loss: 3.202e-02 
+<epoch:344, lr:1.000e-04> loss: 3.295e-02 
+<epoch:345, lr:1.000e-04> loss: 3.364e-02 
+<epoch:346, lr:1.000e-04> loss: 3.232e-02 
+<epoch:347, lr:1.000e-04> loss: 3.240e-02 
+<epoch:348, lr:1.000e-04> loss: 3.148e-02 
+<epoch:349, lr:1.000e-04> loss: 3.301e-02 
+<epoch:350, lr:1.000e-04> loss: 3.369e-02 
+<epoch:350, Average PSNR : 30.43dB
+
+<epoch:351, lr:1.000e-04> loss: 3.293e-02 
+<epoch:352, lr:1.000e-04> loss: 3.335e-02 
+<epoch:353, lr:1.000e-04> loss: 3.249e-02 
+<epoch:354, lr:1.000e-04> loss: 3.271e-02 
+<epoch:355, lr:1.000e-04> loss: 3.203e-02 
+<epoch:356, lr:1.000e-04> loss: 3.289e-02 
+<epoch:357, lr:1.000e-04> loss: 3.348e-02 
+<epoch:358, lr:1.000e-04> loss: 3.298e-02 
+<epoch:359, lr:1.000e-04> loss: 3.247e-02 
+<epoch:360, lr:1.000e-04> loss: 3.289e-02 
+<epoch:360, Average PSNR : 30.37dB
+
+<epoch:361, lr:1.000e-04> loss: 3.268e-02 
+<epoch:362, lr:1.000e-04> loss: 3.291e-02 
+<epoch:363, lr:1.000e-04> loss: 3.230e-02 
+<epoch:364, lr:1.000e-04> loss: 3.239e-02 
+<epoch:365, lr:1.000e-04> loss: 3.247e-02 
+<epoch:366, lr:1.000e-04> loss: 3.343e-02 
+<epoch:367, lr:1.000e-04> loss: 3.202e-02 
+<epoch:368, lr:1.000e-04> loss: 3.306e-02 
+<epoch:369, lr:1.000e-04> loss: 3.315e-02 
+<epoch:370, lr:1.000e-04> loss: 3.262e-02 
+<epoch:370, Average PSNR : 30.41dB
+
+<epoch:371, lr:1.000e-04> loss: 3.306e-02 
+<epoch:372, lr:1.000e-04> loss: 3.252e-02 
+<epoch:373, lr:1.000e-04> loss: 3.219e-02 
+<epoch:374, lr:1.000e-04> loss: 3.184e-02 
+<epoch:375, lr:1.000e-04> loss: 3.219e-02 
+<epoch:376, lr:1.000e-04> loss: 3.276e-02 
+<epoch:377, lr:1.000e-04> loss: 3.284e-02 
+<epoch:378, lr:1.000e-04> loss: 3.291e-02 
+<epoch:379, lr:1.000e-04> loss: 3.316e-02 
+<epoch:380, lr:1.000e-04> loss: 3.247e-02 
+<epoch:380, Average PSNR : 30.51dB
+
+<epoch:381, lr:1.000e-04> loss: 3.256e-02 
+<epoch:382, lr:1.000e-04> loss: 3.215e-02 
+<epoch:383, lr:1.000e-04> loss: 3.308e-02 
+<epoch:384, lr:1.000e-04> loss: 3.283e-02 
+<epoch:385, lr:1.000e-04> loss: 3.167e-02 
+<epoch:386, lr:1.000e-04> loss: 3.254e-02 
+<epoch:387, lr:1.000e-04> loss: 3.241e-02 
+<epoch:388, lr:1.000e-04> loss: 3.285e-02 
+<epoch:389, lr:1.000e-04> loss: 3.297e-02 
+<epoch:390, lr:1.000e-04> loss: 3.265e-02 
+<epoch:390, Average PSNR : 30.46dB
+
+<epoch:391, lr:1.000e-04> loss: 3.313e-02 
+<epoch:392, lr:1.000e-04> loss: 3.185e-02 
+<epoch:393, lr:1.000e-04> loss: 3.322e-02 
+<epoch:394, lr:1.000e-04> loss: 3.256e-02 
+<epoch:395, lr:1.000e-04> loss: 3.340e-02 
+<epoch:396, lr:1.000e-04> loss: 3.227e-02 
+<epoch:397, lr:1.000e-04> loss: 3.282e-02 
+<epoch:398, lr:1.000e-04> loss: 3.170e-02 
+<epoch:399, lr:1.000e-04> loss: 3.346e-02 
+<epoch:400, lr:1.000e-04> loss: 3.254e-02 
+<epoch:400, Average PSNR : 30.58dB
+
+<epoch:401, lr:1.000e-04> loss: 3.384e-02 
+<epoch:402, lr:1.000e-04> loss: 3.257e-02 
+<epoch:403, lr:1.000e-04> loss: 3.275e-02 
+<epoch:404, lr:1.000e-04> loss: 3.246e-02 
+<epoch:405, lr:1.000e-04> loss: 3.203e-02 
+<epoch:406, lr:1.000e-04> loss: 3.301e-02 
+<epoch:407, lr:1.000e-04> loss: 3.259e-02 
+<epoch:408, lr:1.000e-04> loss: 3.282e-02 
+<epoch:409, lr:1.000e-04> loss: 3.306e-02 
+<epoch:410, lr:1.000e-04> loss: 3.203e-02 
+<epoch:410, Average PSNR : 30.46dB
+
+<epoch:411, lr:5.000e-05> loss: 3.314e-02 
+<epoch:412, lr:5.000e-05> loss: 3.179e-02 
+<epoch:413, lr:5.000e-05> loss: 3.258e-02 
+<epoch:414, lr:5.000e-05> loss: 3.199e-02 
+<epoch:415, lr:5.000e-05> loss: 3.335e-02 
+<epoch:416, lr:5.000e-05> loss: 3.273e-02 
+<epoch:417, lr:5.000e-05> loss: 3.316e-02 
+<epoch:418, lr:5.000e-05> loss: 3.206e-02 
+<epoch:419, lr:5.000e-05> loss: 3.070e-02 
+<epoch:420, lr:5.000e-05> loss: 3.313e-02 
+<epoch:420, Average PSNR : 30.58dB
+
+<epoch:421, lr:5.000e-05> loss: 3.203e-02 
+<epoch:422, lr:5.000e-05> loss: 3.341e-02 
+<epoch:423, lr:5.000e-05> loss: 3.271e-02 
+<epoch:424, lr:5.000e-05> loss: 3.241e-02 
+<epoch:425, lr:5.000e-05> loss: 3.255e-02 
+<epoch:426, lr:5.000e-05> loss: 3.257e-02 
+<epoch:427, lr:5.000e-05> loss: 3.259e-02 
+<epoch:428, lr:5.000e-05> loss: 3.139e-02 
+<epoch:429, lr:5.000e-05> loss: 3.292e-02 
+<epoch:430, lr:5.000e-05> loss: 3.237e-02 
+<epoch:430, Average PSNR : 30.66dB
+
+<epoch:431, lr:5.000e-05> loss: 3.380e-02 
+<epoch:432, lr:5.000e-05> loss: 3.188e-02 
+<epoch:433, lr:5.000e-05> loss: 3.243e-02 
+<epoch:434, lr:5.000e-05> loss: 3.311e-02 
+<epoch:435, lr:5.000e-05> loss: 3.266e-02 
+<epoch:436, lr:5.000e-05> loss: 3.135e-02 
+<epoch:437, lr:5.000e-05> loss: 3.235e-02 
+<epoch:438, lr:5.000e-05> loss: 3.384e-02 
+<epoch:439, lr:5.000e-05> loss: 3.216e-02 
+<epoch:440, lr:5.000e-05> loss: 3.205e-02 
+<epoch:440, Average PSNR : 30.64dB
+
+<epoch:441, lr:5.000e-05> loss: 3.220e-02 
+<epoch:442, lr:5.000e-05> loss: 3.145e-02 
+<epoch:443, lr:5.000e-05> loss: 3.247e-02 
+<epoch:444, lr:5.000e-05> loss: 3.304e-02 
+<epoch:445, lr:5.000e-05> loss: 3.366e-02 
+<epoch:446, lr:5.000e-05> loss: 3.175e-02 
+<epoch:447, lr:5.000e-05> loss: 3.231e-02 
+<epoch:448, lr:5.000e-05> loss: 3.272e-02 
+<epoch:449, lr:5.000e-05> loss: 3.210e-02 
+<epoch:450, lr:5.000e-05> loss: 3.302e-02 
+<epoch:450, Average PSNR : 30.70dB
+
+<epoch:451, lr:5.000e-05> loss: 3.128e-02 
+<epoch:452, lr:5.000e-05> loss: 3.257e-02 
+<epoch:453, lr:5.000e-05> loss: 3.218e-02 
+<epoch:454, lr:5.000e-05> loss: 3.306e-02 
+<epoch:455, lr:5.000e-05> loss: 3.171e-02 
+<epoch:456, lr:5.000e-05> loss: 3.257e-02 
+<epoch:457, lr:5.000e-05> loss: 3.334e-02 
+<epoch:458, lr:5.000e-05> loss: 3.277e-02 
+<epoch:459, lr:5.000e-05> loss: 3.207e-02 
+<epoch:460, lr:5.000e-05> loss: 3.240e-02 
+<epoch:460, Average PSNR : 30.55dB
+
+<epoch:461, lr:5.000e-05> loss: 3.272e-02 
+<epoch:462, lr:5.000e-05> loss: 3.202e-02 
+<epoch:463, lr:5.000e-05> loss: 3.236e-02 
+<epoch:464, lr:5.000e-05> loss: 3.178e-02 
+<epoch:465, lr:5.000e-05> loss: 3.303e-02 
+<epoch:466, lr:5.000e-05> loss: 3.178e-02 
+<epoch:467, lr:5.000e-05> loss: 3.294e-02 
+<epoch:468, lr:5.000e-05> loss: 3.168e-02 
+<epoch:469, lr:5.000e-05> loss: 3.221e-02 
+<epoch:470, lr:5.000e-05> loss: 3.252e-02 
+<epoch:470, Average PSNR : 30.65dB
+
+<epoch:471, lr:5.000e-05> loss: 3.207e-02 
+<epoch:472, lr:5.000e-05> loss: 3.224e-02 
+<epoch:473, lr:5.000e-05> loss: 3.195e-02 
+<epoch:474, lr:5.000e-05> loss: 3.253e-02 
+<epoch:475, lr:5.000e-05> loss: 3.213e-02 
+<epoch:476, lr:5.000e-05> loss: 3.201e-02 
+<epoch:477, lr:5.000e-05> loss: 3.175e-02 
+<epoch:478, lr:5.000e-05> loss: 3.208e-02 
+<epoch:479, lr:5.000e-05> loss: 3.198e-02 
+<epoch:480, lr:5.000e-05> loss: 3.222e-02 
+<epoch:480, Average PSNR : 30.68dB
+
+<epoch:481, lr:5.000e-05> loss: 3.176e-02 
+<epoch:482, lr:5.000e-05> loss: 3.312e-02 
+<epoch:483, lr:5.000e-05> loss: 3.305e-02 
+<epoch:484, lr:5.000e-05> loss: 3.274e-02 
+<epoch:485, lr:5.000e-05> loss: 3.175e-02 
+<epoch:486, lr:5.000e-05> loss: 3.170e-02 
+<epoch:487, lr:5.000e-05> loss: 3.230e-02 
+<epoch:488, lr:5.000e-05> loss: 3.203e-02 
+<epoch:489, lr:5.000e-05> loss: 3.244e-02 
+<epoch:490, lr:5.000e-05> loss: 3.289e-02 
+<epoch:490, Average PSNR : 30.63dB
+
+<epoch:491, lr:5.000e-05> loss: 3.200e-02 
+<epoch:492, lr:5.000e-05> loss: 3.197e-02 
+<epoch:493, lr:5.000e-05> loss: 3.266e-02 
+<epoch:494, lr:5.000e-05> loss: 3.245e-02 
+<epoch:495, lr:5.000e-05> loss: 3.275e-02 
+<epoch:496, lr:5.000e-05> loss: 3.190e-02 
+<epoch:497, lr:5.000e-05> loss: 3.252e-02 
+<epoch:498, lr:5.000e-05> loss: 3.181e-02 
+<epoch:499, lr:5.000e-05> loss: 3.238e-02 
+<epoch:500, lr:5.000e-05> loss: 3.202e-02 
+<epoch:500, Average PSNR : 30.74dB
+
+<epoch:501, lr:5.000e-05> loss: 3.192e-02 
+<epoch:502, lr:5.000e-05> loss: 3.262e-02 
+<epoch:503, lr:5.000e-05> loss: 3.245e-02 
+<epoch:504, lr:5.000e-05> loss: 3.228e-02 
+<epoch:505, lr:5.000e-05> loss: 3.279e-02 
+<epoch:506, lr:5.000e-05> loss: 3.212e-02 
+<epoch:507, lr:5.000e-05> loss: 3.259e-02 
+<epoch:508, lr:5.000e-05> loss: 3.288e-02 
+<epoch:509, lr:5.000e-05> loss: 3.393e-02 
+<epoch:510, lr:5.000e-05> loss: 3.315e-02 
+<epoch:510, Average PSNR : 30.74dB
+
+<epoch:511, lr:5.000e-05> loss: 3.320e-02 
+<epoch:512, lr:5.000e-05> loss: 3.215e-02 
+<epoch:513, lr:5.000e-05> loss: 3.278e-02 
+<epoch:514, lr:5.000e-05> loss: 3.211e-02 
+<epoch:515, lr:5.000e-05> loss: 3.283e-02 
+<epoch:516, lr:5.000e-05> loss: 3.223e-02 
+<epoch:517, lr:5.000e-05> loss: 3.208e-02 
+<epoch:518, lr:5.000e-05> loss: 3.205e-02 
+<epoch:519, lr:5.000e-05> loss: 3.290e-02 
+<epoch:520, lr:5.000e-05> loss: 3.249e-02 
+<epoch:520, Average PSNR : 30.64dB
+
+<epoch:521, lr:5.000e-05> loss: 3.270e-02 
+<epoch:522, lr:5.000e-05> loss: 3.228e-02 
+<epoch:523, lr:5.000e-05> loss: 3.139e-02 
+<epoch:524, lr:5.000e-05> loss: 3.266e-02 
+<epoch:525, lr:5.000e-05> loss: 3.285e-02 
+<epoch:526, lr:5.000e-05> loss: 3.216e-02 
+<epoch:527, lr:5.000e-05> loss: 3.237e-02 
+<epoch:528, lr:5.000e-05> loss: 3.245e-02 
+<epoch:529, lr:5.000e-05> loss: 3.261e-02 
+<epoch:530, lr:5.000e-05> loss: 3.252e-02 
+<epoch:530, Average PSNR : 30.67dB
+
+<epoch:531, lr:5.000e-05> loss: 3.348e-02 
+<epoch:532, lr:5.000e-05> loss: 3.179e-02 
+<epoch:533, lr:5.000e-05> loss: 3.199e-02 
+<epoch:534, lr:5.000e-05> loss: 3.203e-02 
+<epoch:535, lr:5.000e-05> loss: 3.232e-02 
+<epoch:536, lr:5.000e-05> loss: 3.232e-02 
+<epoch:537, lr:5.000e-05> loss: 3.225e-02 
+<epoch:538, lr:5.000e-05> loss: 3.279e-02 
+<epoch:539, lr:5.000e-05> loss: 3.172e-02 
+<epoch:540, lr:5.000e-05> loss: 3.279e-02 
+<epoch:540, Average PSNR : 30.78dB
+
+<epoch:541, lr:5.000e-05> loss: 3.183e-02 
+<epoch:542, lr:5.000e-05> loss: 3.241e-02 
+<epoch:543, lr:5.000e-05> loss: 3.256e-02 
+<epoch:544, lr:5.000e-05> loss: 3.289e-02 
+<epoch:545, lr:5.000e-05> loss: 3.237e-02 
+<epoch:546, lr:5.000e-05> loss: 3.232e-02 
+<epoch:547, lr:5.000e-05> loss: 3.323e-02 
+<epoch:548, lr:2.500e-05> loss: 3.217e-02 
+<epoch:549, lr:2.500e-05> loss: 3.309e-02 
+<epoch:550, lr:2.500e-05> loss: 3.190e-02 
+<epoch:550, Average PSNR : 30.82dB
+
+<epoch:551, lr:2.500e-05> loss: 3.156e-02 
+<epoch:552, lr:2.500e-05> loss: 3.255e-02 
+<epoch:553, lr:2.500e-05> loss: 3.221e-02 
+<epoch:554, lr:2.500e-05> loss: 3.152e-02 
+<epoch:555, lr:2.500e-05> loss: 3.122e-02 
+<epoch:556, lr:2.500e-05> loss: 3.240e-02 
+<epoch:557, lr:2.500e-05> loss: 3.258e-02 
+<epoch:558, lr:2.500e-05> loss: 3.200e-02 
+slurmstepd: error: *** JOB 26639390 ON gr004 CANCELLED AT 2022-11-06T21:31:43 DUE TO TIME LIMIT ***
