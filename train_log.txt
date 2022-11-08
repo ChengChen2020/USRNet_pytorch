@@ -5,9 +5,7 @@ Train Loader size: 73
 Valid Dataset size: 5
 Valid Loader size: 5
 Data Loader successful!
-/scratch/cc6858/ece57000/penv/lib/python3.8/site-packages/torch/utils/data/dataloader.py:563: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
-  warnings.warn(_create_warning_msg(
-<epoch:  1, lr:1.000e-04> loss: 3.731e-01 
+<epoch:  1, lr:1.000e-04> loss: 3.731e-01
 <epoch:  2, lr:1.000e-04> loss: 2.458e-01 
 <epoch:  3, lr:1.000e-04> loss: 2.420e-01 
 <epoch:  4, lr:1.000e-04> loss: 2.205e-01 
@@ -666,13 +664,3 @@ Data Loader successful!
 <epoch:549, lr:2.500e-05> loss: 3.309e-02 
 <epoch:550, lr:2.500e-05> loss: 3.190e-02 
 <epoch:550, Average PSNR : 30.82dB
-
-<epoch:551, lr:2.500e-05> loss: 3.156e-02 
-<epoch:552, lr:2.500e-05> loss: 3.255e-02 
-<epoch:553, lr:2.500e-05> loss: 3.221e-02 
-<epoch:554, lr:2.500e-05> loss: 3.152e-02 
-<epoch:555, lr:2.500e-05> loss: 3.122e-02 
-<epoch:556, lr:2.500e-05> loss: 3.240e-02 
-<epoch:557, lr:2.500e-05> loss: 3.258e-02 
-<epoch:558, lr:2.500e-05> loss: 3.200e-02 
-slurmstepd: error: *** JOB 26639390 ON gr004 CANCELLED AT 2022-11-06T21:31:43 DUE TO TIME LIMIT ***
