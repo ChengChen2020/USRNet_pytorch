@@ -1,13 +1,11 @@
 *.out
 *.tar
 *.zip
+*.pth
 .DS_Store
 .idea/
-testsets/
-trainsets/
 train_log/
 test_log/
-model_zoo/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

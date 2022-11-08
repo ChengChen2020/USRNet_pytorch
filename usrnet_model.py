@@ -191,6 +191,7 @@ class USRNet(nn.Module):
         # [B, 3, h, w]
 
         h, w = x.shape[-2:]
+        # For Eq.7 from paper https://arxiv.org/abs/2003.10428
         Fk = p2o(k, (h * sf, w * sf))
         FkC = torch.conj(Fk)
         F2k = torch.pow(torch.abs(Fk), 2)
