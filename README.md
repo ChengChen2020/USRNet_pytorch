@@ -39,12 +39,12 @@ The official implementation is at https://github.com/cszn/USRNet.
 - `usrnet_data.py`
   - Data processing part.
   - **Modified** from the official repository.
-    - Followed the procedure yet reconstructed the code pipeline, e.g., simplified the interfaces, fixed the outdated function calls.
+    - Followed the procedure yet reconstructed the code pipeline, e.g., made adjustments to the interfaces, fixed the outdated function calls.
     - Add more comments and unit tests.
 - `usrnet_model.py`
   - Model definition part.
   - **Modified** from the official repository.
-    - Followed the structure yet reconstructed the code pipeline, e.g., simplified the interfaces, removed definitions that are redundant or not in use.
+    - Followed the structure yet reconstructed the code pipeline, e.g., simplified the interfaces, adjusted definitions that are redundant or not in use.
     - Add more comments and unit tests for each module.
 - All others are **original** code.
   - `usrnet_train.py`
