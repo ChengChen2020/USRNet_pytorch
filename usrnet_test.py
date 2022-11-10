@@ -76,7 +76,7 @@ def main(model_name, testset_name):
                     img_I[:k_v.shape[0], -k_v.shape[1]:, :] = k_v  # Kernel at top right corner
                     img_I[:img_L.shape[0], :img_L.shape[1], :] = img_L
                     util.imsave(np.concatenate([img_I, img_E, img_H], axis=1),
-                                os.path.join(E_path, img_name + '_x' + str(sf) + '_k' + str(k_index + 1) + '_LEH.png'))
+                                os.path.join(E_path, img_name + '_x' + str(sf) + '_k' + str(k_index + 1) + '_n' + str(noise_level) + '_LEH.png'))
 
             ave_psnr_k = sum(test_results['psnr']) / len(test_results['psnr'])
             print('------> Average PSNR(RGB) of ({}) scale factor: ({}), kernel: ({}) sigma: ({}): {:.2f} dB'.format(
