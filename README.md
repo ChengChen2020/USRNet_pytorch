@@ -22,7 +22,9 @@ Intermediate validation results and model weights will be saved at `train_log`.
 ## Test
 
 ```python
+# Test on BSD68
 python usrnet_test.py --save_LEH > test_log.txt # if saving Low-Resolution (L), Estimated (E) and High-Resolution (H) test images.
+# Test on real images
 python usrnet_real.py
 ```
 Results will be saved at `test_log`.
