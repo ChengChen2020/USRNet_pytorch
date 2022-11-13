@@ -10,7 +10,7 @@ A non-official implementation for [Deep unfolding network for image super-resolu
 - Testing datasets
   - [Set5](https://github.com/cszn/DPSR/tree/master/testsets/Set5/GT): A dataset consisting of 5 images (“baby”, “bird”, “butterfly”, “head”, “woman”) commonly used for testing performance of Image Super-Resolution models.
   - [BSD68](https://github.com/cszn/DPSR/tree/master/testsets/BSD68/GT): Berkeley Segmentation Dataset.
-  - Real images: TODO
+  - [Real images](https://github.com/cszn/USRNet/tree/master/testsets/set_real): `chip.png` and `comic.png`
 
 ## Train
 
@@ -23,8 +23,9 @@ Intermediate validation results and model weights will be saved at `train_log`.
 
 ```python
 python usrnet_test.py --save_LEH > test_log.txt # if saving Low-Resolution (L), Estimated (E) and High-Resolution (H) test images.
+python usrnet_real.py
 ```
-LEH images will be saved at `test_log`.
+Results will be saved at `test_log`.
 
 ## Code Structure
 
@@ -35,6 +36,9 @@ The official implementation is at https://github.com/cszn/USRNet.
   - **Copied**) from https://github.com/tkkcc/prior/blob/879a0b6c117c810776d8cc6b63720bf29f7d0cc4/util/gen_kernel.py and https://github.com/assafshocher/BlindSR_dataset_generator.
 - `utils_image.py`
   - Utiliy functions such as kernel visualization, image augmentation, tensor manipulation and PSNR calculation.
+  - **Copied** from the official repository.
+- `usrnet_real.py`
+  - Real image super-resolution
   - **Copied** from the official repository.
 - `usrnet_data.py`
   - Data processing part.
@@ -51,8 +55,8 @@ The official implementation is at https://github.com/cszn/USRNet.
 - All others are **original** code.
   - `usrnet_train.py`
   - `usrnet_test.py`
-  - `psnr.py`: TODO
-  - `real_test.py`: TODO
+  - `psnr.py`
+  - `vis_kernels.py`
 
 ## Reference
 

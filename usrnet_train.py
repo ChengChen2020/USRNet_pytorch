@@ -63,6 +63,7 @@ def main():
 
     optimizer = Adam(model.parameters(), lr=1e-4, betas=[0.9, 0.999])
     scheduler = MultiStepLR(optimizer,
+                            # milestones=[40000, 50000, 60000, 70000]
                             milestones=[30000, 40000, 50000, 60000],
                             gamma=0.5
                             )
