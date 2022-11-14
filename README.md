@@ -38,7 +38,7 @@ The official implementation is at https://github.com/cszn/USRNet.
   - **Copied**) from https://github.com/tkkcc/prior/blob/879a0b6c117c810776d8cc6b63720bf29f7d0cc4/util/gen_kernel.py and https://github.com/assafshocher/BlindSR_dataset_generator.
 - `utils_image.py`
   - Utiliy functions such as kernel visualization, image augmentation, tensor manipulation and PSNR calculation.
-  - **Copied** from the official repository.
+  - **Copied** from the official repository with minor modification.
 - `usrnet_real.py`
   - Real image super-resolution
   - **Copied** from the official repository.
@@ -57,7 +57,7 @@ The official implementation is at https://github.com/cszn/USRNet.
 - All others are **original** code.
   - `usrnet_train.py`
   - `usrnet_test.py`
-  - `psnr.py`
+  - `vis_psnr.py`
   - `vis_kernels.py`
 
 ## Reference
