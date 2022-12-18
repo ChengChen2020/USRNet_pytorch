@@ -135,9 +135,9 @@ def gaussianblurkernel_synthesis(k_size=np.array([25, 25]), scale_factor=np.arra
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    for i in range(10):
-        k = gaussianblurkernel_synthesis(noise_level=np.random.randint(0, 25))
-        # k = motionblurkernel_synthesis()
+    for i in range(1):
+        # k = gaussianblurkernel_synthesis(noise_level=np.random.randint(0, 25))
+        k = motionblurkernel_synthesis()
         # k = fspecial_gauss(25, 2)
         print(k.shape)
         plt.imshow(k, interpolation="nearest", cmap="gray")
